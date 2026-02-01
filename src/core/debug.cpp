@@ -51,14 +51,17 @@ namespace vsrg
 
     Debugger::~Debugger()
     {
-        if (running)
         {
-            running = false;
-            logNotify.notify_one();
-            if (logThread.joinable())
+            std::lock_guard<std::mutex> lock(logMutex);
+            if (running)
             {
-                logThread.join();
+                running = false;
             }
+        }
+        logNotify.notify_one();
+        if (logThread.joinable())
+        {
+            logThread.join();
         }
 
         {
@@ -130,11 +133,16 @@ namespace vsrg
 
     void Debugger::processQueue()
     {
-        while (running)
+        while (true)
         {
             std::unique_lock<std::mutex> lock(logMutex);
             logNotify.wait(lock, [this]
                            { return !logQueue.empty() || !running; });
+
+            if (!running && logQueue.empty())
+            {
+                break;
+            }
 
             while (!logQueue.empty())
             {

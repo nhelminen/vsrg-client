@@ -8,7 +8,6 @@
 #include <queue>
 #include <thread>
 #include <condition_variable>
-#include <atomic>
 
 namespace vsrg {
     enum class DebugLevel {
@@ -26,8 +25,8 @@ namespace vsrg {
 
         void log(DebugLevel level, const std::string& message, const char* file, int line);
     private:
-        std::atomic<bool> saveToFile = true;
-        std::atomic<bool> running = true;
+        bool saveToFile = true;
+        bool running = true;
 
         std::string levelToString(DebugLevel level);
 

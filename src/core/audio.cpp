@@ -9,6 +9,7 @@ namespace vsrg {
         if (result != MA_SUCCESS) {
             std::cerr << "Failed to initialize audio engine: " << result << std::endl;
             initialized = false;
+            return;
         }
 
         initialized = true;

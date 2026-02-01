@@ -1,0 +1,42 @@
+#pragma once
+
+#include <iostream>
+#include <string>
+#include <filesystem>
+#include <fstream>
+#include <mutex>
+#include <queue>
+#include <thread>
+#include <condition_variable>
+
+namespace vsrg {
+    enum class DebugLevel {
+        NONE,
+        ERROR,
+        WARNING,
+        INFO,
+        DEBUG
+    };
+
+    class Debugger {
+    public:
+        Debugger();
+        ~Debugger();
+
+        void log(DebugLevel level, const std::string& message);
+    private:
+        bool saveToFile = true;
+        bool running = true;
+
+        std::string levelToString(DebugLevel level);
+
+        std::ofstream logFile;
+        std::mutex logMutex;
+
+        std::queue<std::string> logQueue;
+        std::condition_variable logNotify;
+        std::thread logThread;
+
+        void processQueue();
+    };
+}

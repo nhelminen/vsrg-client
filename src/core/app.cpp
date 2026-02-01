@@ -47,18 +47,20 @@ namespace vsrg
 			return;
 		}
 
-		std::cout << "OpenGL Loaded" << std::endl;
-		std::cout << "Vendor: " << glGetString(GL_VENDOR) << std::endl;
-		std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
-		std::cout << "Version: " << glGetString(GL_VERSION) << std::endl;
+		debugger = new Debugger();
+		debugger->log(DebugLevel::INFO, "OpenGL Loaded");
+		debugger->log(DebugLevel::INFO, std::string("Vendor: ") + reinterpret_cast<const char*>(glGetString(GL_VENDOR)));
+		debugger->log(DebugLevel::INFO, std::string("Renderer: ") + reinterpret_cast<const char*>(glGetString(GL_RENDERER)));
+		debugger->log(DebugLevel::INFO, std::string("Version: ") + reinterpret_cast<const char*>(glGetString(GL_VERSION)));
 
 		glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
 		// Initialize other stuff
 		AudioManager* audio_manager = new AudioManager();
 		if (!audio_manager->is_initialized()) {
-			std::cerr << "audio failed to initialize" << std::endl;
-			// TODO: handle audio init failure cause i am too lazy to deal with it rn
+			debugger->log(DebugLevel::ERROR, "Failed to initialize AudioManager");
+		} else {
+			debugger->log(DebugLevel::INFO, "AudioManager initialized successfully");
 		}
 
 		gl_initialized = true;

@@ -7,6 +7,7 @@
 #include <glm/glm.hpp>
 
 #include "core/audio.hpp"
+#include "core/debug.hpp"
 
 namespace vsrg {
 	class Client {
@@ -23,6 +24,7 @@ namespace vsrg {
 		SDL_Window* window;
 		SDL_GLContext gl_context;
 		AudioManager* audio_manager;
+		Debugger* debugger;
 
 		int SCREEN_WIDTH;
 		int SCREEN_HEIGHT;

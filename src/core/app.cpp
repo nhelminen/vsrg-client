@@ -49,9 +49,17 @@ namespace vsrg
 
 		debugger = new Debugger();
 		VSRG_LOG(*debugger, DebugLevel::INFO, "OpenGL Loaded");
-		VSRG_LOG(*debugger, DebugLevel::INFO, std::string("Vendor: ") + reinterpret_cast<const char *>(glGetString(GL_VENDOR)));
-		VSRG_LOG(*debugger, DebugLevel::INFO, std::string("Renderer: ") + reinterpret_cast<const char *>(glGetString(GL_RENDERER)));
-		VSRG_LOG(*debugger, DebugLevel::INFO, std::string("Version: ") + reinterpret_cast<const char *>(glGetString(GL_VERSION)));
+
+		const char *vendor = reinterpret_cast<const char *>(glGetString(GL_VENDOR));
+		const char *renderer = reinterpret_cast<const char *>(glGetString(GL_RENDERER));
+		const char *version = reinterpret_cast<const char *>(glGetString(GL_VERSION));
+
+		if (vendor)
+			VSRG_LOG(*debugger, DebugLevel::INFO, std::string("Vendor: ") + vendor);
+		if (renderer)
+			VSRG_LOG(*debugger, DebugLevel::INFO, std::string("Renderer: ") + renderer);
+		if (version)
+			VSRG_LOG(*debugger, DebugLevel::INFO, std::string("Version: ") + version);
 
 		glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 

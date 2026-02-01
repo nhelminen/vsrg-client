@@ -1,5 +1,5 @@
 ﻿cmake_minimum_required(VERSION 3.28)
-set(PROJECT_NAME "vsrg")
+set(PROJECT_NAME "vsrg-client")
 project(${PROJECT_NAME} VERSION 0.0.0)
 
 set(BUILD_SHARED_LIBS FALSE)
@@ -19,4 +19,4 @@ file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
 )
 add_executable(${PROJECT_NAME} ${SOURCES})
 
-target_link_libraries(${PROJECT_NAME} PRIVATE "libraries")
+target_link_libraries(${PROJECT_NAME} PRIVATE "3rdparty")

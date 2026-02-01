@@ -61,6 +61,26 @@ namespace vsrg
             }
         }
 
+        while (!logQueue.empty())
+        {
+            std::string message = logQueue.front();
+            logQueue.pop();
+
+            if (message.find("[ERROR]") != std::string::npos)
+            {
+                std::cerr << message << std::endl;
+            }
+            else
+            {
+                std::cout << message << std::endl;
+            }
+
+            if (saveToFile && logFile.is_open())
+            {
+                logFile << message << std::endl;
+            }
+        }
+
         if (logFile.is_open())
         {
             logFile.close();

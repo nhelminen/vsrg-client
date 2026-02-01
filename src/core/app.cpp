@@ -60,6 +60,8 @@ namespace vsrg
 		if (!audio_manager->is_initialized())
 		{
 			VSRG_LOG(*debugger, DebugLevel::ERROR, "Failed to initialize AudioManager");
+			gl_initialized = false;
+			return;
 		}
 		else
 		{

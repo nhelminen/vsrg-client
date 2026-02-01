@@ -1,6 +1,8 @@
 #include "core/debug.hpp"
 #include "core/utils.hpp"
 
+#include <sstream>
+
 namespace vsrg
 {
     Debugger::Debugger()
@@ -8,11 +10,15 @@ namespace vsrg
         std::string execDir = Utils::getExecutableDir();
         std::string logDir = Utils::joinPaths(execDir, "logs");
 
-        try {
-            if (!std::filesystem::exists(logDir)) {
+        try
+        {
+            if (!std::filesystem::exists(logDir))
+            {
                 std::filesystem::create_directory(logDir);
             }
-        } catch(...) {
+        }
+        catch (...)
+        {
             saveToFile = false; // disable file saving if it cant access or create log dir
         }
 
@@ -21,17 +27,21 @@ namespace vsrg
 
         std::string fileName = "debug_" + curDate + "_" + curTime + ".log";
 
-        // clean up filename, lazy method 
-        for (auto& ch : fileName) {
-            if (ch == ':' || ch == ' ') {
+        // clean up filename, lazy method
+        for (auto &ch : fileName)
+        {
+            if (ch == ':' || ch == ' ')
+            {
                 ch = '-';
             }
         }
 
         std::string logPath = Utils::joinPaths(logDir, fileName);
-        if (saveToFile) {
+        if (saveToFile)
+        {
             logFile.open(logPath, std::ios::out | std::ios::app);
-            if (!logFile.is_open()) {
+            if (!logFile.is_open())
+            {
                 saveToFile = false; // disable if failed to open
             }
         }
@@ -49,6 +59,11 @@ namespace vsrg
             {
                 logThread.join();
             }
+        }
+
+        if (logFile.is_open())
+        {
+            logFile.close();
         }
     }
 
@@ -69,7 +84,7 @@ namespace vsrg
         }
     }
 
-    void Debugger::log(DebugLevel level, const std::string& message, const char* file, int line)
+    void Debugger::log(DebugLevel level, const std::string &message, const char *file, int line)
     {
         std::string prefix = levelToString(level);
         std::string timestamp = Utils::getCurrentTimestamp();
@@ -95,7 +110,8 @@ namespace vsrg
         while (running)
         {
             std::unique_lock<std::mutex> lock(logMutex);
-            logNotify.wait(lock, [this] { return !logQueue.empty() || !running; });
+            logNotify.wait(lock, [this]
+                           { return !logQueue.empty() || !running; });
 
             while (!logQueue.empty())
             {
@@ -103,14 +119,18 @@ namespace vsrg
                 logQueue.pop();
 
                 // log to console
-                if (message.find("[ERROR]") != std::string::npos) {
+                if (message.find("[ERROR]") != std::string::npos)
+                {
                     std::cerr << message << std::endl;
-                } else {
+                }
+                else
+                {
                     std::cout << message << std::endl;
                 }
 
                 // log to file
-                if (saveToFile && logFile.is_open()) {
+                if (saveToFile && logFile.is_open())
+                {
                     logFile << message << std::endl;
                 }
             }

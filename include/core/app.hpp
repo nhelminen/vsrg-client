@@ -8,6 +8,7 @@
 
 #include "core/audio.hpp"
 #include "core/debug.hpp"
+#include "core/screen.hpp"
 
 namespace vsrg {
 	class Client {
@@ -22,16 +23,24 @@ namespace vsrg {
 
 		void start();
 		bool is_initialized() const { return gl_initialized; }
+
+		Debugger* get_debugger() const { return debugger; }
+		AudioManager* get_audio_manager() const { return audio_manager; }
+		ScreenManager* get_screen_manager() const { return screen_manager; }
 	private:
+		Uint64 last_time;
+		float delta_time;
+
 		bool gl_initialized = false;
 		bool should_close = false;
 
 		SDL_Window* window;
 		SDL_GLContext gl_context;
 
-		AudioManager* audio_manager = nullptr;
 		Debugger* debugger = nullptr;
-
+		AudioManager* audio_manager = nullptr;
+		ScreenManager* screen_manager = nullptr;
+		
 		int SCREEN_WIDTH;
 		int SCREEN_HEIGHT;
 	};

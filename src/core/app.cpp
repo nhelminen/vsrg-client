@@ -1,4 +1,5 @@
 #include "core/app.hpp"
+#include "core/screens/initScreen.hpp"
 
 #include <iostream>
 
@@ -48,6 +49,8 @@ namespace vsrg
 		}
 
 		debugger = new Debugger();
+
+		VSRG_LOG(*debugger, DebugLevel::INFO, "Debugger initialized");
 		VSRG_LOG(*debugger, DebugLevel::INFO, "OpenGL Loaded");
 
 		const char *vendor = reinterpret_cast<const char *>(glGetString(GL_VENDOR));
@@ -67,6 +70,7 @@ namespace vsrg
 		audio_manager = new AudioManager();
 		if (!audio_manager->is_initialized())
 		{
+			// why is this a syntax error??? i think my editor is tweaking
 			VSRG_LOG(*debugger, DebugLevel::ERROR, "Failed to initialize AudioManager");
 			gl_initialized = false;
 			return;
@@ -75,6 +79,13 @@ namespace vsrg
 		{
 			VSRG_LOG(*debugger, DebugLevel::INFO, "AudioManager initialized successfully");
 		}
+
+		screen_manager = new ScreenManager(this);
+		VSRG_LOG(*debugger, DebugLevel::INFO, "ScreenManager created");
+
+		// placeholder, need to figure out how this should actually be structured
+		Screen* init_screen = new InitScreen(this);
+		screen_manager->add_screen(init_screen);
 
 		gl_initialized = true;
 	}
@@ -109,6 +120,10 @@ namespace vsrg
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+		// initialize timing (not the final solution cause sdl performance counters are horribly inaccurate)
+		last_time = SDL_GetPerformanceCounter();
+		delta_time = 0.0f;
+
 		SDL_Event event;
 		while (!should_close)
 		{
@@ -126,7 +141,15 @@ namespace vsrg
 
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			// Rendering here
+			// temporarily here
+			Uint64 current_time = SDL_GetPerformanceCounter();
+			delta_time = static_cast<float>(current_time - last_time) / SDL_GetPerformanceFrequency();
+			last_time = current_time;
+
+			// think we might need 2 threads eventually, one for logic and one for rendering
+			// but for now this is fine?
+			screen_manager->update(delta_time);
+			screen_manager->render();
 
 			SDL_GL_SwapWindow(window);
 		}

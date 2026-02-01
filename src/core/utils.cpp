@@ -56,10 +56,16 @@ namespace vsrg
     {
         auto now = system_clock::now();
         auto now_time_t = system_clock::to_time_t(now);
-        std::tm *local_time = std::localtime(&now_time_t);
+
+        std::tm local_time;
+#ifdef _WIN32
+        localtime_s(&local_time, &now_time_t);
+#else
+        localtime_r(&now_time_t, &local_time);
+#endif
 
         std::stringstream ss;
-        ss << std::put_time(local_time, "%Y-%m-%d");
+        ss << std::put_time(&local_time, "%Y-%m-%d");
         return ss.str();
     }
 

@@ -15,6 +15,11 @@ namespace vsrg {
 		Client(int screen_width = 1280, int screen_height = 720);
 		~Client();
 
+		Client(const Client&) = delete;
+		Client& operator=(const Client&) = delete;
+		Client(Client&&) = delete;
+		Client& operator=(Client&&) = delete;
+
 		void start();
 		bool is_initialized() const { return gl_initialized; }
 	private:
@@ -23,7 +28,7 @@ namespace vsrg {
 
 		SDL_Window* window;
 		SDL_GLContext gl_context;
-		
+
 		AudioManager* audio_manager = nullptr;
 		Debugger* debugger = nullptr;
 

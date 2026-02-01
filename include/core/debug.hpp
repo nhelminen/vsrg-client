@@ -23,7 +23,7 @@ namespace vsrg {
         Debugger();
         ~Debugger();
 
-        void log(DebugLevel level, const std::string& message);
+        void log(DebugLevel level, const std::string& message, const char* file, int line);
     private:
         bool saveToFile = true;
         bool running = true;
@@ -40,3 +40,6 @@ namespace vsrg {
         void processQueue();
     };
 }
+
+// create a macro so i can catch file and line automatically
+#define VSRG_LOG(debugger, level, message) (debugger).log(level, message, __FILE__, __LINE__)

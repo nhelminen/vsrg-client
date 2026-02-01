@@ -69,13 +69,16 @@ namespace vsrg
         }
     }
 
-    void Debugger::log(DebugLevel level, const std::string& message)
+    void Debugger::log(DebugLevel level, const std::string& message, const char* file, int line)
     {
         std::string prefix = levelToString(level);
         std::string timestamp = Utils::getCurrentTimestamp();
 
+        std::string filename = std::filesystem::path(file).filename().string();
+
         std::stringstream logOutput;
         logOutput << timestamp << " " << prefix;
+        logOutput << " [" << filename << ":" << line << "]";
         logOutput << " " << message;
 
         std::string finalLog = logOutput.str();

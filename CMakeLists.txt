@@ -11,7 +11,7 @@ find_package(OpenGL REQUIRED)
 
 add_subdirectory("3rdparty")
 
-include_directories(${PROJECT_SOURCE_DIR}/src)
+include_directories(${PROJECT_SOURCE_DIR}/include)
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
 	"src/*.[ch]pp"
 	"src/*.[ch]"

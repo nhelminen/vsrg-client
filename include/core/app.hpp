@@ -10,6 +10,8 @@
 #include "core/debug.hpp"
 #include "core/screen.hpp"
 
+using Clock = std::chrono::high_resolution_clock;
+
 namespace vsrg {
 	class Client {
 	public:
@@ -28,7 +30,7 @@ namespace vsrg {
 		AudioManager* get_audio_manager() const { return audio_manager; }
 		ScreenManager* get_screen_manager() const { return screen_manager; }
 	private:
-		Uint64 last_time;
+		Clock::time_point last_time;
 		float delta_time;
 
 		bool gl_initialized = false;

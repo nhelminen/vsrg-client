@@ -1,9 +1,17 @@
 #include "core/screen.hpp"
+#include "core/app.hpp"
 
 #include <algorithm>
 
 namespace vsrg
 {
+    void Screen::set_z_order(int z)
+    {
+        z_order = z;
+        if (client != nullptr)
+            client->get_screen_manager()->mark_dirty();
+    }
+
     ScreenManager::ScreenManager(Client *client)
         : client(client)
     {
@@ -14,11 +22,12 @@ namespace vsrg
         clear();
     }
 
-    void ScreenManager::add_screen(Screen *screen)
+    void ScreenManager::add_screen(std::unique_ptr<Screen> screen)
     {
-        screens.push_back(screen);
         screen->set_state(ScreenState::ACTIVE);
-        screen->load();
+        screens.push_back(std::move(screen));
+
+        needs_sort = true;
     }
 
     void ScreenManager::remove_screen(const std::string &name)
@@ -28,7 +37,6 @@ namespace vsrg
             if ((*it)->get_name() == name)
             {
                 (*it)->set_state(ScreenState::INACTIVE);
-                (*it)->unload();
                 screens.erase(it);
                 break;
             }
@@ -48,10 +56,13 @@ namespace vsrg
 
     void ScreenManager::render()
     {
-        // sort screens by z-order before rendering
-        std::sort(screens.begin(), screens.end(),
-                  [](Screen *a, Screen *b)
-                  { return a->get_z_order() < b->get_z_order(); });
+        if (needs_sort)
+        {
+            std::sort(screens.begin(), screens.end(),
+                      [](const auto &a, const auto &b)
+                      { return a->get_z_order() < b->get_z_order(); });
+            needs_sort = false;
+        }
 
         for (auto &screen : screens)
         {
@@ -66,7 +77,7 @@ namespace vsrg
     {
         for (auto &screen : screens)
         {
-            delete screen;
+            screen->set_state(ScreenState::INACTIVE);
         }
         screens.clear();
     }

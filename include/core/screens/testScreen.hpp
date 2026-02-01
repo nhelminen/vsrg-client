@@ -11,12 +11,16 @@
 namespace vsrg {
     class Client;
 
-    class InitScreen : public Screen {
+    class TestScreen : public Screen {
     public:
-        InitScreen(Client* client);
-        ~InitScreen() override;
+        TestScreen(Client* client);
+        ~TestScreen() override;
         
         void update(float delta_time) override;
         void render() override;
+    private:
+        GLuint vao = 0;
+        GLuint vbo = 0;
+        GLuint shader_program = 0;
     };
 }

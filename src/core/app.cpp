@@ -83,9 +83,8 @@ namespace vsrg
 		screen_manager = new ScreenManager(this);
 		VSRG_LOG(*debugger, DebugLevel::INFO, "ScreenManager created");
 
-		// placeholder, need to figure out how this should actually be structured
-		Screen* init_screen = new InitScreen(this);
-		screen_manager->add_screen(init_screen);
+		// add default init screen
+		screen_manager->add_screen(std::make_unique<InitScreen>(this));
 
 		gl_initialized = true;
 	}
@@ -121,8 +120,7 @@ namespace vsrg
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		// initialize timing (not the final solution cause sdl performance counters are horribly inaccurate)
-		last_time = SDL_GetPerformanceCounter();
-		delta_time = 0.0f;
+		last_time = Clock::now();
 
 		SDL_Event event;
 		while (!should_close)
@@ -141,9 +139,9 @@ namespace vsrg
 
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			// temporarily here
-			Uint64 current_time = SDL_GetPerformanceCounter();
-			delta_time = static_cast<float>(current_time - last_time) / SDL_GetPerformanceFrequency();
+			// temporarily here till i multithread properly
+			auto current_time = Clock::now();
+			delta_time = std::chrono::duration<float>(current_time - last_time).count();
 			last_time = current_time;
 
 			// think we might need 2 threads eventually, one for logic and one for rendering

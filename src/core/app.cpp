@@ -81,9 +81,6 @@ namespace vsrg
 
 	Client::~Client()
 	{
-		if (!gl_initialized)
-			return;
-
 		if (audio_manager != nullptr)
 		{
 			delete audio_manager;

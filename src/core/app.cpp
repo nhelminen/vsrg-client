@@ -55,6 +55,11 @@ namespace vsrg
 		glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
 		// Initialize other stuff
+		AudioManager* audio_manager = new AudioManager();
+		if (!audio_manager->is_initialized()) {
+			std::cerr << "audio failed to initialize" << std::endl;
+			// TODO: handle audio init failure cause i am too lazy to deal with it rn
+		}
 
 		gl_initialized = true;
 	}
@@ -63,8 +68,6 @@ namespace vsrg
 	{
 		if (!gl_initialized)
 			return;
-
-		// Clean up other initialized stuff
 
 		if (gl_context != nullptr)
 			SDL_GL_DestroyContext(gl_context);

@@ -6,6 +6,18 @@ build(){
 	
 	cmake -E make_directory build
 	cmake -E chdir build cmake ..
+
+
+	if [[ $run == true ]]; then
+		exec ./build/bin/vsrg-client
+	fi
 }
 
-build || echo "Build failed" 
+run=false;
+if [[ "$1" == "run" ]]; then
+	run=true;
+fi
+
+build || echo "Build failed" && exit 1;
+
+

@@ -7,9 +7,19 @@
 #include <glm/glm.hpp>
 
 namespace vsrg {
+	class Client {
+	public:
+		Client(int screen_width = 1280, int screen_height = 720);
+		~Client();
+		void start();
+	private:
+		bool gl_initialized = false;
+		bool should_close = false;
 
-	void initialize();
-	void run();
-	void destroy();
+		SDL_Window* window;
+		SDL_GLContext gl_context;
 
+		int SCREEN_WIDTH;
+		int SCREEN_HEIGHT;
+	};
 }

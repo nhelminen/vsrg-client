@@ -2,17 +2,14 @@
 
 #include <iostream>
 
-namespace vsrg {
-
-	bool gl_initialized = false;
-	bool should_close = false;
-	SDL_Window* window = nullptr;
-	SDL_GLContext gl_context = nullptr;
-	int SCREEN_WIDTH = 800;
-	int SCREEN_HEIGHT = 600;
-
-	void initialize() {
-		if (!SDL_Init(SDL_INIT_VIDEO)) {
+namespace vsrg
+{
+	Client::Client(int screen_width, int screen_height)
+		: SCREEN_WIDTH(screen_width), SCREEN_HEIGHT(screen_height),
+		  window(nullptr), gl_context(nullptr)
+	{
+		if (!SDL_Init(SDL_INIT_VIDEO))
+		{
 			gl_initialized = false;
 			return;
 		}
@@ -25,21 +22,24 @@ namespace vsrg {
 
 		window = SDL_CreateWindow("VSRG Client", SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
 
-		if (window == nullptr) {
+		if (window == nullptr)
+		{
 			SDL_Quit();
 			gl_initialized = false;
 			return;
 		}
 
 		gl_context = SDL_GL_CreateContext(window);
-		if (gl_context == nullptr) {
+		if (gl_context == nullptr)
+		{
 			SDL_DestroyWindow(window);
 			SDL_Quit();
 			gl_initialized = false;
 			return;
 		}
 
-		if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)) {
+		if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
+		{
 			SDL_GL_DestroyContext(gl_context);
 			SDL_DestroyWindow(window);
 			SDL_Quit();
@@ -54,23 +54,43 @@ namespace vsrg {
 
 		glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-		// Initializate other stuff here
+		// Initialize other stuff
 
 		gl_initialized = true;
 	}
 
-	void run() {
-		if (!gl_initialized) return;
+	Client::~Client()
+	{
+		if (!gl_initialized)
+			return;
+
+		// Clean up other initialized stuff
+
+		if (gl_context != nullptr)
+			SDL_GL_DestroyContext(gl_context);
+		if (window != nullptr)
+			SDL_DestroyWindow(window);
+		SDL_Quit();
+	}
+
+	void Client::start()
+	{
+		if (!gl_initialized)
+			return;
 
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		SDL_Event event;
-		while (!should_close) {
-			while (SDL_PollEvent(&event)) {
-				if (event.type == SDL_EVENT_QUIT) should_close = true;
-				if (event.type == SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED) {
+		while (!should_close)
+		{
+			while (SDL_PollEvent(&event))
+			{
+				if (event.type == SDL_EVENT_QUIT)
+					should_close = true;
+				if (event.type == SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED)
+				{
 					SCREEN_WIDTH = (int)event.window.data1;
 					SCREEN_HEIGHT = (int)event.window.data2;
 					glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -82,17 +102,6 @@ namespace vsrg {
 			// Rendering here
 
 			SDL_GL_SwapWindow(window);
-
 		}
-
 	}
-
-	void destroy() {
-		if (!gl_initialized) return;
-
-		SDL_GL_DestroyContext(gl_context);
-		SDL_DestroyWindow(window);
-		SDL_Quit();
-	}
-
 }

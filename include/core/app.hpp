@@ -23,8 +23,9 @@ namespace vsrg {
 
 		SDL_Window* window;
 		SDL_GLContext gl_context;
-		AudioManager* audio_manager;
-		Debugger* debugger;
+		
+		AudioManager* audio_manager = nullptr;
+		Debugger* debugger = nullptr;
 
 		int SCREEN_WIDTH;
 		int SCREEN_HEIGHT;

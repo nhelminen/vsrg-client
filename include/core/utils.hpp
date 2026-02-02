@@ -13,7 +13,7 @@ namespace vsrg
     {
     public:
         template <typename... Args>
-        static std::string joinPaths(Args... args)
+        static std::string joinPaths(Args&&... args)
         {
             std::filesystem::path result;
             // why is this valid c++ syntax what the helly

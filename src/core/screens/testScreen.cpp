@@ -1,6 +1,7 @@
 #include "core/screens/TestScreen.hpp"
 #include "core/app.hpp"
 #include "core/debug.hpp"
+#include "core/shader.hpp"
 
 #include <glad/glad.h>
 
@@ -31,51 +32,7 @@ namespace vsrg
     TestScreen::TestScreen(Client *client)
         : Screen(client, "TestScreen", 1)
     {
-        // why are we using 3.3 core??????? cant use immediate mode and we gotta use shaders what the hell
-        GLuint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-        glShaderSource(vertex_shader, 1, &vertex_shader_source, nullptr);
-        glCompileShader(vertex_shader);
-
-        int success;
-        char info_log[512];
-        glGetShaderiv(vertex_shader, GL_COMPILE_STATUS, &success);
-        if (!success)
-        {
-            glGetShaderInfoLog(vertex_shader, 512, nullptr, info_log);
-            client->get_debugger()->log(DebugLevel::ERROR,
-                                        std::string("Vertex shader compilation failed: ") + info_log,
-                                        __FILE__, __LINE__);
-        }
-
-        GLuint fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-        glShaderSource(fragment_shader, 1, &fragment_shader_source, nullptr);
-        glCompileShader(fragment_shader);
-
-        glGetShaderiv(fragment_shader, GL_COMPILE_STATUS, &success);
-        if (!success)
-        {
-            glGetShaderInfoLog(fragment_shader, 512, nullptr, info_log);
-            client->get_debugger()->log(DebugLevel::ERROR,
-                                        std::string("Fragment shader compilation failed: ") + info_log,
-                                        __FILE__, __LINE__);
-        }
-
-        shader_program = glCreateProgram();
-        glAttachShader(shader_program, vertex_shader);
-        glAttachShader(shader_program, fragment_shader);
-        glLinkProgram(shader_program);
-
-        glGetProgramiv(shader_program, GL_LINK_STATUS, &success);
-        if (!success)
-        {
-            glGetProgramInfoLog(shader_program, 512, nullptr, info_log);
-            client->get_debugger()->log(DebugLevel::ERROR,
-                                        std::string("Shader program linking failed: ") + info_log,
-                                        __FILE__, __LINE__);
-        }
-
-        glDeleteShader(vertex_shader);
-        glDeleteShader(fragment_shader);
+        shader_program = createShaderProgram(client, vertex_shader_source, fragment_shader_source);
 
         float vertices[] = {
             -0.5f, -0.5f,

@@ -14,7 +14,7 @@ using namespace std::chrono;
 
 namespace vsrg
 {
-    std::string Utils::getExecutableDir()
+    std::string getExecutableDir()
     {
         std::string path;
 
@@ -52,7 +52,7 @@ namespace vsrg
         return path;
     }
 
-    std::string Utils::getCurrentDate()
+    std::string getCurrentDate()
     {
         auto now = system_clock::now();
         auto now_time_t = system_clock::to_time_t(now);
@@ -69,7 +69,7 @@ namespace vsrg
         return ss.str();
     }
 
-    std::string Utils::getCurrentTimestamp(bool showMs)
+    std::string getCurrentTimestamp(bool showMs)
     {
         auto now = system_clock::now();
         auto now_time_t = system_clock::to_time_t(now);

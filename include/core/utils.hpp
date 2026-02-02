@@ -9,19 +9,15 @@
 
 namespace vsrg
 {
-    class Utils
+    template <typename... Args>
+    std::string joinPaths(Args&&... args)
     {
-    public:
-        template <typename... Args>
-        static std::string joinPaths(Args&&... args)
-        {
-            std::filesystem::path result;
-            // why is this valid c++ syntax what the helly
-            ((result /= std::forward<Args>(args)), ...);
-            return result.string();
-        }
-        static std::string getExecutableDir();
-        static std::string getCurrentDate();
-        static std::string getCurrentTimestamp(bool showMs = true);
-    };
+        std::filesystem::path result;
+        // why is this valid c++ syntax what the helly
+        ((result /= std::forward<Args>(args)), ...);
+        return result.string();
+    }
+    std::string getExecutableDir();
+    std::string getCurrentDate();
+    std::string getCurrentTimestamp(bool showMs = true);
 }

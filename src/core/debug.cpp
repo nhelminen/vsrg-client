@@ -7,8 +7,8 @@ namespace vsrg
 {
     Debugger::Debugger()
     {
-        std::string execDir = Utils::getExecutableDir();
-        std::string logDir = Utils::joinPaths(execDir, "logs");
+        std::string execDir = getExecutableDir();
+        std::string logDir = joinPaths(execDir, "logs");
 
         try
         {
@@ -22,8 +22,8 @@ namespace vsrg
             saveToFile = false; // disable file saving if it cant access or create log dir
         }
 
-        std::string curDate = Utils::getCurrentDate();
-        std::string curTime = Utils::getCurrentTimestamp(false);
+        std::string curDate = getCurrentDate();
+        std::string curTime = getCurrentTimestamp(false);
 
         std::string fileName = "debug_" + curDate + "_" + curTime + ".log";
 
@@ -36,7 +36,7 @@ namespace vsrg
             }
         }
 
-        std::string logPath = Utils::joinPaths(logDir, fileName);
+        std::string logPath = joinPaths(logDir, fileName);
         if (saveToFile)
         {
             logFile.open(logPath, std::ios::out | std::ios::app);
@@ -113,7 +113,7 @@ namespace vsrg
     void Debugger::log(DebugLevel level, const std::string &message, const char *file, int line)
     {
         std::string prefix = levelToString(level);
-        std::string timestamp = Utils::getCurrentTimestamp();
+        std::string timestamp = getCurrentTimestamp();
 
         std::string filename = std::filesystem::path(file).filename().string();
 

@@ -9,11 +9,11 @@
 #include <glm/glm.hpp>
 
 namespace vsrg {
-    class Client;
+    class EngineContext;
 
     class TestScreen : public Screen {
     public:
-        TestScreen(Client* client);
+        TestScreen(EngineContext* engine_context);
         ~TestScreen() override;
         
         void update(float delta_time) override;

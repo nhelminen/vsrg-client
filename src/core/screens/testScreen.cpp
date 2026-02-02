@@ -1,7 +1,8 @@
 #include "core/screens/TestScreen.hpp"
-#include "core/app.hpp"
 #include "core/debug.hpp"
 #include "core/shader.hpp"
+
+#include "public/engineContext.hpp"
 
 #include <glad/glad.h>
 
@@ -29,10 +30,10 @@ const char *fragment_shader_source = R"(
 
 namespace vsrg
 {
-    TestScreen::TestScreen(Client *client)
-        : Screen(client, "TestScreen", 1)
+    TestScreen::TestScreen(EngineContext* engine_context)
+        : Screen(engine_context, "TestScreen", 1)
     {
-        shader_program = createShaderProgram(client, vertex_shader_source, fragment_shader_source);
+        shader_program = createShaderProgram(engine_context, vertex_shader_source, fragment_shader_source);
 
         float vertices[] = {
             -0.5f, -0.5f,
@@ -55,7 +56,7 @@ namespace vsrg
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
 
-        client->get_debugger()->log(DebugLevel::INFO, "TestScreen loaded", __FILE__, __LINE__);
+        engine_context->get_debugger()->log(DebugLevel::INFO, "TestScreen loaded", __FILE__, __LINE__);
     }
 
     TestScreen::~TestScreen()
@@ -64,7 +65,7 @@ namespace vsrg
         glDeleteBuffers(1, &vbo);
         glDeleteProgram(shader_program);
 
-        client->get_debugger()->log(DebugLevel::INFO, "TestScreen unloaded", __FILE__, __LINE__);
+        engine_context->get_debugger()->log(DebugLevel::INFO, "TestScreen unloaded", __FILE__, __LINE__);
     }
 
     void TestScreen::update(float delta_time)

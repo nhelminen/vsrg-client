@@ -3,7 +3,7 @@
 
 namespace vsrg {
 
-	GLuint compileShader(Client* client, GLenum type, const char* source) {
+	GLuint compileShader(EngineContext* engine_context, GLenum type, const char* source) {
 		GLuint shader = glCreateShader(type);
 		glShaderSource(shader, 1, &source, nullptr);
 		glCompileShader(shader);
@@ -13,7 +13,7 @@ namespace vsrg {
 		if (!success) {
 			GLchar info_log[512];
 			glGetShaderInfoLog(shader, 512, nullptr, info_log);
-			client->get_debugger()->log(DebugLevel::ERROR,
+			engine_context->get_debugger()->log(DebugLevel::ERROR,
 				std::string("Shader compilation failed: ") + info_log,
 				__FILE__, __LINE__);
 			glDeleteShader(shader);
@@ -22,11 +22,11 @@ namespace vsrg {
 		return shader;
 	}
 
-	GLuint createShaderProgram(Client* client, const char* vertex_shader_source, const char* fragment_shader_source) {
-		GLuint vertex_shader = compileShader(client, GL_VERTEX_SHADER, vertex_shader_source);
+	GLuint createShaderProgram(EngineContext* engine_context, const char* vertex_shader_source, const char* fragment_shader_source) {
+		GLuint vertex_shader = compileShader(engine_context, GL_VERTEX_SHADER, vertex_shader_source);
 		if (!vertex_shader) return 0;
 
-		GLuint fragment_shader = compileShader(client, GL_FRAGMENT_SHADER, fragment_shader_source);
+		GLuint fragment_shader = compileShader(engine_context, GL_FRAGMENT_SHADER, fragment_shader_source);
 		if (!fragment_shader) {
 			glDeleteShader(vertex_shader);
 			return 0;
@@ -42,7 +42,7 @@ namespace vsrg {
 		if (!success) {
 			GLchar info_log[512];
 			glGetProgramInfoLog(program, 512, nullptr, info_log);
-			client->get_debugger()->log(DebugLevel::ERROR,
+			engine_context->get_debugger()->log(DebugLevel::ERROR,
 				std::string("Shader program linking failed: ") + info_log,
 				__FILE__, __LINE__);
 			glDeleteProgram(program);

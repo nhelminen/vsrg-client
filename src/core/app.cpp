@@ -48,6 +48,8 @@ namespace vsrg
 			return;
 		}
 
+		engine_context = new EngineContext(this);
+
 		debugger = new Debugger();
 
 		VSRG_LOG(*debugger, DebugLevel::INFO, "Debugger initialized");
@@ -80,17 +82,31 @@ namespace vsrg
 			VSRG_LOG(*debugger, DebugLevel::INFO, "AudioManager initialized successfully");
 		}
 
-		screen_manager = new ScreenManager(this);
+		screen_manager = new ScreenManager(engine_context);
 		VSRG_LOG(*debugger, DebugLevel::INFO, "ScreenManager created");
 
+		// update the engine context with the created managers
+		engine_context->update();
+
 		// add default init screen
-		screen_manager->add_screen(std::make_unique<InitScreen>(this));
+		screen_manager->add_screen(std::make_unique<InitScreen>(engine_context));
 
 		gl_initialized = true;
 	}
 
 	Client::~Client()
 	{
+		if (engine_context != nullptr)
+		{
+			delete engine_context;
+			engine_context = nullptr;
+		}
+
+		if (screen_manager != nullptr)
+		{
+			delete screen_manager;
+			screen_manager = nullptr;
+		}
 		if (audio_manager != nullptr)
 		{
 			delete audio_manager;

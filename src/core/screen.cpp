@@ -1,5 +1,5 @@
 #include "core/screen.hpp"
-#include "core/app.hpp"
+#include "public/engineContext.hpp"
 
 #include <algorithm>
 
@@ -8,12 +8,12 @@ namespace vsrg
     void Screen::set_z_order(int z)
     {
         z_order = z;
-        if (client != nullptr)
-            client->get_screen_manager()->mark_dirty();
+        if (engine_context != nullptr)
+            engine_context->get_screen_manager()->mark_dirty();
     }
 
-    ScreenManager::ScreenManager(Client *client)
-        : client(client)
+    ScreenManager::ScreenManager(EngineContext *engine_context)
+        : engine_context(engine_context)
     {
     }
 

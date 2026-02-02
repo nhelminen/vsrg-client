@@ -1,10 +1,14 @@
 #pragma once	
 
-#include "core/app.hpp"
+#include "public/engineContext.hpp"
+
+#include <glad/glad.h>
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_opengl.h>
+#define GLM_FORCE_RADIANS
+#include <glm/glm.hpp>
 
 namespace vsrg {
-
-	GLuint compileShader(Client* client, GLenum type, const char* source);
-	GLuint createShaderProgram(Client* client, const char* vertex_shader_source, const char* fragment_shader_source);
-
+	GLuint compileShader(EngineContext* engine_context, GLenum type, const char* source);
+	GLuint createShaderProgram(EngineContext* engine_context, const char* vertex_shader_source, const char* fragment_shader_source);
 }

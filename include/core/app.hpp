@@ -10,6 +10,8 @@
 #include "core/debug.hpp"
 #include "core/screen.hpp"
 
+#include "public/engineContext.hpp"
+
 using Clock = std::chrono::high_resolution_clock;
 
 namespace vsrg {
@@ -25,10 +27,16 @@ namespace vsrg {
 
 		void start();
 		bool is_initialized() const { return gl_initialized; }
+		float get_delta_time() const { return delta_time; }
+
+		int get_screen_width() const { return SCREEN_WIDTH; }
+		int get_screen_height() const { return SCREEN_HEIGHT; }
 
 		Debugger* get_debugger() const { return debugger; }
 		AudioManager* get_audio_manager() const { return audio_manager; }
 		ScreenManager* get_screen_manager() const { return screen_manager; }
+
+		EngineContext* get_engine_context() const { return engine_context; }
 	private:
 		Clock::time_point last_time;
 		float delta_time;
@@ -45,5 +53,7 @@ namespace vsrg {
 		
 		int SCREEN_WIDTH;
 		int SCREEN_HEIGHT;
+
+		EngineContext* engine_context = nullptr;
 	};
 }

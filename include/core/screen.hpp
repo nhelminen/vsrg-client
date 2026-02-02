@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+#include "public/engineContext.hpp"
+
 namespace vsrg
 {
     class Client;
@@ -16,8 +18,8 @@ namespace vsrg
     class Screen
     {
     public:
-        Screen(Client *client, const std::string &name, int z_order = 0)
-            : client(client), name(name), z_order(z_order)
+        Screen(EngineContext *engine_context, const std::string &name, int z_order = 0)
+            : engine_context(engine_context), name(name), z_order(z_order)
         {
         }
         virtual ~Screen() = default;
@@ -35,7 +37,7 @@ namespace vsrg
         bool is_active() const { return state == ScreenState::ACTIVE; }
 
     protected:
-        Client *client;
+        EngineContext *engine_context;
         std::string name;
         ScreenState state = ScreenState::INACTIVE;
 
@@ -45,7 +47,7 @@ namespace vsrg
     class ScreenManager
     {
     public:
-        ScreenManager(Client *client);
+        ScreenManager(EngineContext *engine_context);
         ~ScreenManager();
 
         void add_screen(std::unique_ptr<Screen> screen);
@@ -56,9 +58,8 @@ namespace vsrg
 
         void clear();
         void mark_dirty() { needs_sort = true; }
-
     private:
-        Client *client;
+        EngineContext *engine_context;
         std::vector<std::unique_ptr<Screen>> screens;
 
         bool needs_sort = false;

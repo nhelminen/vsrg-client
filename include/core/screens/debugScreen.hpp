@@ -13,10 +13,10 @@
 namespace vsrg {
     class EngineContext;
 
-    class TestScreen : public Screen {
+    class DebugScreen : public Screen {
     public:
-        TestScreen(EngineContext* engine_context);
-        ~TestScreen() override;
+        DebugScreen(EngineContext* engine_context);
+        ~DebugScreen() override;
         
         void update(float delta_time) override;
         void render() override;

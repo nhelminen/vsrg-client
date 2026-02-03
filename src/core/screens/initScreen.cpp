@@ -3,7 +3,7 @@
 
 #include "public/engineContext.hpp"
 
-#include "core/screens/testScreen.hpp"
+#include "core/screens/DebugScreen.hpp"
 #include <glad/glad.h>
 
 namespace vsrg {
@@ -11,7 +11,7 @@ namespace vsrg {
         : Screen(engine_context, "InitScreen", 0)
     {
         engine_context->get_debugger()->log(DebugLevel::INFO, "InitScreen loaded", __FILE__, __LINE__);
-        engine_context->get_screen_manager()->add_screen(std::make_unique<TestScreen>(engine_context));
+        engine_context->get_screen_manager()->add_screen(std::make_unique<DebugScreen>(engine_context));
     }
 
     InitScreen::~InitScreen()

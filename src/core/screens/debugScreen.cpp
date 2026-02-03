@@ -1,4 +1,4 @@
-#include "core/screens/testScreen.hpp"
+#include "core/screens/debugScreen.hpp"
 #include "core/debug.hpp"
 #include "core/shader.hpp"
 #include "core/audio.hpp"
@@ -32,14 +32,14 @@ const char *fragment_shader_source = R"(
 
 namespace vsrg
 {
-    TestScreen::TestScreen(EngineContext* engine_context)
-        : Screen(engine_context, "TestScreen", 1),
+    DebugScreen::DebugScreen(EngineContext* engine_context)
+        : Screen(engine_context, "DebugScreen", 1),
         font_manager(engine_context),
         font(engine_context, font_manager.getFt(), "assets/NotoSansJP-Regular.ttf", 32),
         text_component(engine_context, &font)
     {
-        TextRenderOptions render_options = { {100.0f, 100.0f}, 32.0f, { 1.0f, 1.0f, 1.0f } };
-        text_component.setText("\343\201\223\343\202\223\343\201\253\343\201\241\343\201\257\343\200\201\344\270\226\347\225\214");
+        TextRenderOptions render_options = { {16.0f, 16.0f}, 12.0f, { 1.0f, 1.0f, 1.0f }, 4.0f };
+        text_component.setText("?");
         text_component.setRenderOptions(render_options);
 
         shader_program = createShaderProgram(engine_context, vertex_shader_source, fragment_shader_source);
@@ -66,7 +66,7 @@ namespace vsrg
         glBindVertexArray(0);
 
         Debugger* debugger = engine_context->get_debugger();
-        debugger->log(DebugLevel::INFO, "TestScreen loaded", __FILE__, __LINE__);
+        debugger->log(DebugLevel::INFO, "DebugScreen loaded", __FILE__, __LINE__);
 
         AudioManager* audio_manager = engine_context->get_audio_manager();
         if (audio_manager) {
@@ -116,21 +116,24 @@ namespace vsrg
         }
     }
 
-    TestScreen::~TestScreen()
+    DebugScreen::~DebugScreen()
     {
         glDeleteVertexArrays(1, &vao);
         glDeleteBuffers(1, &vbo);
         glDeleteProgram(shader_program);
 
-        engine_context->get_debugger()->log(DebugLevel::INFO, "TestScreen unloaded", __FILE__, __LINE__);
+        engine_context->get_debugger()->log(DebugLevel::INFO, "DebugScreen unloaded", __FILE__, __LINE__);
     }
 
-    void TestScreen::update(float delta_time)
+    void DebugScreen::update(float delta_time)
     {
-        // update, use this for any time-based changes
+        float fps = getFPS(delta_time);
+        std::string memory = getFormattedMemoryUsage();
+
+        text_component.setText("FPS: " + std::to_string(static_cast<int>(fps)) + "\nMemory: " + memory);
     }
 
-    void TestScreen::render()
+    void DebugScreen::render()
     {
         glUseProgram(shader_program);
         

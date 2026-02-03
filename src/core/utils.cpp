@@ -2,12 +2,15 @@
 
 #ifdef _WIN32
 #include <windows.h>
+#include <psapi.h>
 #elif defined(__linux__)
 #include <unistd.h>
 #include <limits.h>
+#include <fstream>
 #elif defined(__APPLE__)
 #include <mach-o/dyld.h>
 #include <limits.h>
+#include <mach/mach.h>
 #endif
 
 using namespace std::chrono;
@@ -52,7 +55,8 @@ namespace vsrg
         return path;
     }
 
-    std::string getAssetPath(std::string asset) {
+    std::string getAssetPath(std::string asset)
+    {
         std::string execDir = getExecutableDir();
         return joinPaths(execDir, "assets", asset);
     }
@@ -96,6 +100,62 @@ namespace vsrg
             ss << "." << std::setw(3) << std::setfill('0') << ms.count();
         }
 
+        return ss.str();
+    }
+
+    float getFPS(float deltaTime)
+    {
+        if (deltaTime <= 0.0)
+            return 0.0;
+
+        return 1.0 / deltaTime;
+    }
+
+    size_t getMemoryUsage()
+    {
+#ifdef _WIN32
+        PROCESS_MEMORY_COUNTERS_EX pmc;
+        if (GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS *)&pmc, sizeof(pmc)))
+        {
+            return static_cast<size_t>(pmc.WorkingSetSize);
+        }
+        return 0;
+#elif defined(__linux__)
+        std::ifstream status_file("/proc/self/status");
+        std::string line;
+
+        while (std::getline(status_file, line))
+        {
+            if (line.substr(0, 6) == "VmRSS:")
+            {
+                size_t memory_kb = 0;
+                std::stringstream ss(line.substr(6));
+                ss >> memory_kb;
+                return memory_kb * 1024;
+            }
+        }
+        return 0;
+#elif defined(__APPLE__)
+        struct mach_task_basic_info info;
+        mach_msg_type_number_t count = MACH_TASK_BASIC_INFO_COUNT;
+
+        if (task_info(mach_task_self(), MACH_TASK_BASIC_INFO, (task_info_t)&info, &count) == KERN_SUCCESS)
+        {
+            return static_cast<size_t>(info.resident_size);
+        }
+        return 0;
+#else
+        return 0;
+#endif
+    }
+
+    std::string getFormattedMemoryUsage()
+    {
+        size_t bytes = getMemoryUsage();
+        double mb = static_cast<double>(bytes) / (1024.0 * 1024.0);
+        
+        std::stringstream ss;
+        ss << std::fixed << std::setprecision(2) << mb << " MB";
         return ss.str();
     }
 }

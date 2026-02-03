@@ -23,4 +23,8 @@ namespace vsrg
 
     std::string getCurrentDate();
     std::string getCurrentTimestamp(bool showMs = true);
+
+    float getFPS(float deltaTime);
+    size_t getMemoryUsage();
+    std::string getFormattedMemoryUsage();
 }

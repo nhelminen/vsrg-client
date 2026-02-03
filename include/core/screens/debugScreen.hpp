@@ -1,7 +1,7 @@
 #pragma once
 
 #include "core/screen.hpp"
-#include "core/font.hpp"
+#include "core/ui/font.hpp"
 #include "core/ui/textComponent.hpp"
 
 #include <glad/glad.h>

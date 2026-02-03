@@ -2,7 +2,7 @@
 
 #include "public/engineContext.hpp"
 #include "core/ui/uiComponent.hpp"
-#include "core/font.hpp"
+#include "core/ui/font.hpp"
 
 #include <vector>
 #include <memory>

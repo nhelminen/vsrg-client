@@ -29,11 +29,12 @@ namespace vsrg {
 
     uniform sampler2D atlas;
     uniform vec3 color;
+	uniform float opacity;
 
     void main()
     {
         float alpha = texture(atlas, texture_coords).r;
-        texture_color = vec4(color, alpha);
+        texture_color = vec4(color, alpha * opacity);
     }
 )glsl";
 
@@ -45,6 +46,7 @@ namespace vsrg {
 		projection_uniform = glGetUniformLocation(shader_program, "projection");
 		atlas_uniform = glGetUniformLocation(shader_program, "atlas");
 		color_uniform = glGetUniformLocation(shader_program, "color");
+		opacity_uniform = glGetUniformLocation(shader_program, "opacity");
 	}
 
 	TextComponent::~TextComponent() {
@@ -72,17 +74,39 @@ namespace vsrg {
 
 		glUseProgram(shader_program);
 
-		glUniform3f(color_uniform, text_options.color.x, text_options.color.y, text_options.color.z);
+		glUniform1f(opacity_uniform, properties.opacity);
+    	glUniform3f(color_uniform, text_options.color.x, text_options.color.y, text_options.color.z);
 
-		glm::mat4 projection = glm::ortho(0.0f, (float)engine_context->get_screen_width(), (float)engine_context->get_screen_height(), 0.0f);
-		glUniformMatrix4fv(projection_uniform, 1, GL_FALSE, glm::value_ptr(projection));
+		glm::vec2 dims = getDimensions();
+    	glm::vec2 anchor_offset = dims * properties.anchor;
+
+		glm::mat4 projection = glm::ortho(
+			0.0f, (float)engine_context->get_screen_width(), 
+			(float)engine_context->get_screen_height(), 0.0f
+		);
+
+		glm::mat4 transform = glm::mat4(1.0f);
+
+		transform = glm::translate(transform, glm::vec3(properties.position, 0.0f));
+		transform = glm::translate(transform, glm::vec3(-anchor_offset, 0.0f));
+
+		if (properties.rotation != 0.0f) {
+			transform = glm::rotate(transform, properties.rotation, glm::vec3(0.0f, 0.0f, 1.0f));
+		}
+
+		if (properties.scale != glm::vec2(1.0f)) {
+			transform = glm::scale(transform, glm::vec3(properties.scale, 1.0f));
+		}
+
+		glm::mat4 final_projection = projection * transform;
+    	glUniformMatrix4fv(projection_uniform, 1, GL_FALSE, glm::value_ptr(final_projection));
 
 		glActiveTexture(GL_TEXTURE0);
 		glUniform1i(atlas_uniform, 0);
 		glBindVertexArray(font->getVAO());
 
-		float current_x = properties.position.x;
-		float current_y = properties.position.y;
+		float current_x = 0.0f;
+		float current_y = 0.0f;
 
 		float scaling_factor = getScalingFactor();
 		float line_height = (font->getSizePt() + text_options.line_gap) * scaling_factor;
@@ -90,7 +114,7 @@ namespace vsrg {
 
 		for (auto c = drawable_string.text.begin(); c != drawable_string.text.end(); c++) {
 			if (*c == '\n') {
-				current_x = properties.position.x;
+				current_x = 0.0f;
 				current_y += line_height;
 				continue;
 			}

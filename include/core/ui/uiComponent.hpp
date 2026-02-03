@@ -13,6 +13,7 @@ namespace vsrg {
 
 		glm::vec2 position = glm::vec2(0.0f);
         glm::vec2 scale = glm::vec2(1.0f);
+        glm::vec2 anchor = glm::vec2(0.0f);
 	};
 
     class UIComponent {
@@ -40,8 +41,8 @@ namespace vsrg {
         virtual void setZOrder(int z) { properties.z_order = z; }
         virtual int getZOrder() const { return properties.z_order; }
 
-        virtual void setRotation(float rotation) { properties.rotation = rotation; }
-        virtual float getRotation() const { return properties.rotation; }
+        virtual void setRotation(float rotation) { properties.rotation = glm::radians(rotation); }
+        virtual float getRotation() const { return glm::degrees(properties.rotation); }
 
         ComponentProperties& getProperties() { return properties; }
         const ComponentProperties& getProperties() const { return properties; }

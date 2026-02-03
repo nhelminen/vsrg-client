@@ -42,6 +42,7 @@ namespace vsrg {
 		GLint projection_uniform;
 		GLint atlas_uniform;
 		GLint color_uniform;
+		GLint opacity_uniform;
 		TextRenderOptions text_options;
 		DrawableString drawable_string;
 	};

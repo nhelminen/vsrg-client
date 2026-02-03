@@ -13,6 +13,7 @@ namespace vsrg {
 		glm::vec2 position = glm::vec2(0.0f);
 		float size = 1.0f;
 		glm::vec3 color = glm::vec3(1.0f);
+		float line_gap = 2.0f;
 	};
 
 	class TextComponent {

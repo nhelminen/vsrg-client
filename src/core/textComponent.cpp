@@ -81,10 +81,19 @@ namespace vsrg {
 		glBindVertexArray(font->getVAO());
 
 		float current_x = render_options.position.x;
+		float current_y = render_options.position.y;
+
 		float scaling_factor = getScalingFactor();
+		float line_height = (font->getSizePt() + render_options.line_gap) * scaling_factor;
 		GLuint last_texture_id = 0;
 
 		for (auto c = drawable_string.text.begin(); c != drawable_string.text.end(); c++) {
+			if (*c == '\n') {
+				current_x = render_options.position.x;
+				current_y += line_height;
+				continue;
+			}
+
 			auto ch = font->getCharacter(*c);
 			if (!ch) continue;
 
@@ -95,7 +104,7 @@ namespace vsrg {
 			}
 
 			float xpos = current_x + ch->bearing.x * scaling_factor;
-			float ypos = render_options.position.y + (font->getBaselineHeight() - ch->bearing.y + font->getSizePt()) * scaling_factor;
+			float ypos = current_y + (font->getBaselineHeight() - ch->bearing.y + font->getSizePt()) * scaling_factor;
 			float w = ch->size.x * scaling_factor;
 			float h = ch->size.y * scaling_factor;
 
@@ -173,16 +182,25 @@ namespace vsrg {
 			return { 0, 0 };
 		}
 
-		float total_width = 0.0f;
+		float current_line_width = 0.0f;
+		float max_width = 0.0f;
 		int max_ascent = 0;
 		int min_descent = 0;
 		bool has_visible_glyphs = false;
+		int line_count = 1;
 
 		for (auto c : text) {
+			if (c == '\n') {
+				max_width = std::max(max_width, current_line_width);
+				current_line_width = 0.0f;
+				line_count++;
+				continue;
+			}
+
 			auto ch = font->getCharacter(c);
 			if (!ch) continue;
 
-			total_width += ch->advance * getScalingFactor();
+			current_line_width += ch->advance * getScalingFactor();
 
 			if (ch->size.x > 0 && ch->size.y > 0) {
 				if (!has_visible_glyphs) {
@@ -197,9 +215,12 @@ namespace vsrg {
 			}
 		}
 
-		float total_height = has_visible_glyphs ? (max_ascent - min_descent) * getScalingFactor() : 0.0f;
+		max_width = std::max(max_width, current_line_width);
 
-		return { total_width, total_height };
+		float line_height = (font->getSizePt() + render_options.line_gap) * getScalingFactor();
+		float total_height = line_count * line_height;
+
+		return { max_width, total_height };
 	}
 
 }

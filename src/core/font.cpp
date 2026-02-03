@@ -9,7 +9,7 @@
 
 namespace vsrg {
 
-	FontLoader::FontLoader(EngineContext* engine_context) : engine_context(engine_context) {
+	FontManager::FontManager(EngineContext* engine_context) : engine_context(engine_context) {
 		if (FT_Init_FreeType(&ft)) {
 			engine_context->get_debugger()->log(DebugLevel::ERROR,
 				std::string("Failed to initialize FreeType."),
@@ -17,15 +17,11 @@ namespace vsrg {
 		}
 	}
 
-	FontLoader::~FontLoader() {
+	FontManager::~FontManager() {
 		FT_Done_FreeType(ft);
 	}
 
-	Font FontLoader::loadFont(const std::string& path, unsigned int size_pt) {
-		return Font{engine_context, ft, path, size_pt};
-	}
-
-	Font::Font(EngineContext* engine_context, FT_Library ft, const std::string& path, unsigned int size_pt) : engine_context(engine_context), size_pt(size_pt) {
+	Font::Font(EngineContext* engine_context, FT_Library ft, const std::string& path, int size_pt) : engine_context(engine_context), size_pt(size_pt) {
 		if (FT_New_Face(ft, path.c_str(), 0, &face)) {
 			engine_context->get_debugger()->log(DebugLevel::ERROR,
 				std::string("Failed to load font: ") + path,

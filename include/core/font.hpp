@@ -29,32 +29,16 @@ namespace vsrg {
 		glm::vec2 atlas_size_norm;
 	};
 
-	class FontLoader {
-	public:
-		FontLoader(EngineContext* engine_context);
-		~FontLoader();
-
-		Font loadFont(const std::string& path, unsigned int size_pt);
-
-	private:
-		EngineContext* engine_context;
-		FT_Library ft;
-	};
-
 	class Font {
 	public:
-		Font(EngineContext* engine_context, FT_Library ft, const std::string& path, unsigned int size_pt);
+		Font(EngineContext* engine_context, FT_Library ft, const std::string& path, int size_pt);
 		~Font();
-
-		Font(const Font&) = delete;
-		Font& operator=(const Font&) = delete;
 
 		bool isLoaded() const { return loaded; }
 		GLuint getVAO() const { return VAO; }
 		GLuint getVBO() const { return VBO; }
-		unsigned int getSizePt() const { return size_pt; }
-		unsigned int getBaselineHeight() const { return baseline_height; }
-
+		int getSizePt() const { return size_pt; }
+		int getBaselineHeight() const { return baseline_height; }
 		std::optional<Character> getCharacter(Charcode charcode);
 
 	private:
@@ -74,12 +58,24 @@ namespace vsrg {
 		EngineContext* engine_context;
 		bool loaded = false;
 		FT_Face face = nullptr;
-		unsigned int size_pt = 0;
-		unsigned int baseline_height = 0;
+		int size_pt = 0;
+		int baseline_height = 0;
 		GLuint VAO = 0;
 		GLuint VBO = 0;
 		std::vector<Atlas> atlases;
 		std::unordered_map<Charcode, Character> characters;
+	};
+
+	class FontManager {
+	public:
+		FontManager(EngineContext* engine_context);
+		~FontManager();
+
+		FT_Library getFt() const { return ft; }
+
+	private:
+		EngineContext* engine_context;
+		FT_Library ft;
 	};
 
 }

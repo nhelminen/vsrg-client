@@ -31,8 +31,15 @@ const char *fragment_shader_source = R"(
 namespace vsrg
 {
     TestScreen::TestScreen(EngineContext* engine_context)
-        : Screen(engine_context, "TestScreen", 1)
+        : Screen(engine_context, "TestScreen", 1),
+        font_manager(engine_context),
+        font(engine_context, font_manager.getFt(), "assets/NotoSansJP-Regular.ttf", 32),
+        text_component(engine_context, &font)
     {
+        TextRenderOptions render_options = { {100.0f, 100.0f}, 32.0f, { 1.0f, 1.0f, 1.0f } };
+        text_component.setText("\343\201\223\343\202\223\343\201\253\343\201\241\343\201\257\343\200\201\344\270\226\347\225\214");
+        text_component.setRenderOptions(render_options);
+
         shader_program = createShaderProgram(engine_context, vertex_shader_source, fragment_shader_source);
 
         float vertices[] = {
@@ -85,5 +92,7 @@ namespace vsrg
         glBindVertexArray(0);
         
         glUseProgram(0);
+
+        text_component.render();
     }
 }

@@ -1,6 +1,8 @@
 #pragma once
 
 #include "core/screen.hpp"
+#include "core/font.hpp"
+#include "core/textComponent.hpp"
 
 #include <glad/glad.h>
 #include <SDL3/SDL.h>
@@ -22,5 +24,8 @@ namespace vsrg {
         GLuint vao = 0;
         GLuint vbo = 0;
         GLuint shader_program = 0;
+        FontManager font_manager;
+        Font font;
+        TextComponent text_component;
     };
 }

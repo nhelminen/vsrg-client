@@ -10,6 +10,11 @@ target_include_directories(miniaudio INTERFACE
     "${CMAKE_CURRENT_SOURCE_DIR}/miniaudio"
 )
 
+add_library(stb INTERFACE)
+target_include_directories(stb INTERFACE 
+    "${CMAKE_CURRENT_SOURCE_DIR}/stb"
+)
+
 add_library("3rdparty" INTERFACE)
 
 target_include_directories("3rdparty" INTERFACE 
@@ -21,4 +26,5 @@ target_link_libraries("3rdparty" INTERFACE
     glm::glm 
     freetype
     miniaudio
+    stb
 )

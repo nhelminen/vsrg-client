@@ -6,40 +6,17 @@
 
 #include "public/engineContext.hpp"
 
-#include <glad/glad.h>
-
-const char *vertex_shader_source = R"(
-        #version 330 core
-        layout (location = 0) in vec2 aPos;
-        
-        void main()
-        {
-            gl_Position = vec4(aPos, 0.0, 1.0);
-        }
-    )";
-
-const char *fragment_shader_source = R"(
-        #version 330 core
-        out vec4 FragColor;
-        
-        uniform vec4 uColor;
-        
-        void main()
-        {
-            FragColor = uColor;
-        }
-    )";
-
 namespace vsrg
 {
     DebugScreen::DebugScreen(EngineContext* engine_context)
         : Screen(engine_context, "DebugScreen", 1),
         font_manager(engine_context),
-        font(engine_context, font_manager.getFt(), "assets/NotoSansJP-Regular.ttf", 32),
-        text_component(engine_context, &font)
+        font(engine_context, font_manager.getFt(), "assets/fonts/NotoSansJP-Regular.ttf", 32),
+        text_component(engine_context, &font),
+        sprite_component(engine_context, "matusa.png")
     {
         ComponentProperties properties = {
-            true, 1,
+            true,
             0.5f, -4.0f,
             { 16.0f, 16.0f },
             { 1.2f, 0.9f },
@@ -50,32 +27,20 @@ namespace vsrg
             12.0f, 
             4.0f 
         };
+
         text_component.setText("?");
         text_component.setProperties(properties);
         text_component.setTextOptions(text_options);
 
-        shader_program = createShaderProgram(engine_context, vertex_shader_source, fragment_shader_source);
-
-        float vertices[] = {
-            -0.5f, -0.5f,
-            0.5f, -0.5f,
-            0.5f, 0.5f,
-            -0.5f, 0.5f
+        ComponentProperties sprite_properties = {
+            true,
+            1.0f, 0.0f,
+            { 16.0f, 48.0f },
+            { 2.0f, 2.0f },
+            { 0.0f, 0.0f },
         };
-
-        glGenVertexArrays(1, &vao);
-        glGenBuffers(1, &vbo);
-
-        glBindVertexArray(vao);
-
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void *)0);
-        glEnableVertexAttribArray(0);
-
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
+        
+        sprite_component.setProperties(sprite_properties);
 
         Debugger* debugger = engine_context->get_debugger();
         debugger->log(DebugLevel::INFO, "DebugScreen loaded", __FILE__, __LINE__);
@@ -130,10 +95,6 @@ namespace vsrg
 
     DebugScreen::~DebugScreen()
     {
-        glDeleteVertexArrays(1, &vao);
-        glDeleteBuffers(1, &vbo);
-        glDeleteProgram(shader_program);
-
         engine_context->get_debugger()->log(DebugLevel::INFO, "DebugScreen unloaded", __FILE__, __LINE__);
     }
 
@@ -147,17 +108,7 @@ namespace vsrg
 
     void DebugScreen::render()
     {
-        glUseProgram(shader_program);
-        
-        GLint color_location = glGetUniformLocation(shader_program, "uColor");
-        glUniform4f(color_location, 1.0f, 0.0f, 0.0f, 1.0f);
-        
-        glBindVertexArray(vao);
-        glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-        glBindVertexArray(0);
-        
-        glUseProgram(0);
-
         text_component.render();
+        sprite_component.render();
     }
 }

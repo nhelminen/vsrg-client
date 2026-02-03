@@ -2,7 +2,9 @@
 
 #include "core/engine/screen.hpp"
 #include "core/ui/font.hpp"
+
 #include "core/ui/textComponent.hpp"
+#include "core/ui/spriteComponent.hpp"
 
 #include <glad/glad.h>
 #include <SDL3/SDL.h>
@@ -21,11 +23,10 @@ namespace vsrg {
         void update(float delta_time) override;
         void render() override;
     private:
-        GLuint vao = 0;
-        GLuint vbo = 0;
-        GLuint shader_program = 0;
         FontManager font_manager;
         Font font;
+
         TextComponent text_component;
+        SpriteComponent sprite_component;
     };
 }

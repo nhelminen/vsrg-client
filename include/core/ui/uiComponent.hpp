@@ -6,7 +6,6 @@
 namespace vsrg {
     struct ComponentProperties {
         bool visible = true;
-        int z_order = 1;
 
         float opacity = 1.0f;
         float rotation = 0.0f;
@@ -38,11 +37,11 @@ namespace vsrg {
         virtual void setScale(const glm::vec2& scale) { properties.scale = scale; }
         virtual glm::vec2 getScale() const { return properties.scale; }
 
-        virtual void setZOrder(int z) { properties.z_order = z; }
-        virtual int getZOrder() const { return properties.z_order; }
-
         virtual void setRotation(float rotation) { properties.rotation = rotation; }
         virtual float getRotation() const { return properties.rotation; }
+
+        virtual void setAnchor(const glm::vec2& anchor) { properties.anchor = anchor; }
+        virtual glm::vec2 getAnchor() const { return properties.anchor; }
 
         ComponentProperties& getProperties() { return properties; }
         void setProperties(ComponentProperties _properties) { properties = _properties; }

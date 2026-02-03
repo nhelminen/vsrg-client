@@ -38,16 +38,20 @@ namespace vsrg
         font(engine_context, font_manager.getFt(), "assets/NotoSansJP-Regular.ttf", 32),
         text_component(engine_context, &font)
     {
+        ComponentProperties properties = {
+            true, 1,
+            0.5f, -4.0f,
+            { 16.0f, 16.0f },
+            { 1.2f, 0.9f },
+            { 0.0f, 0.0f },
+        };
         TextRenderOptions text_options = { 
             { 1.0f, 1.0f, 1.0f }, 
             12.0f, 
             4.0f 
         };
         text_component.setText("?");
-        text_component.setPosition({ 16.0f, 16.0f });
-        text_component.setRotation(-3.0f);
-        text_component.setOpacity(0.5f);
-        text_component.setScale({ 1.2f, 0.9f });
+        text_component.setProperties(properties);
         text_component.setTextOptions(text_options);
 
         shader_program = createShaderProgram(engine_context, vertex_shader_source, fragment_shader_source);

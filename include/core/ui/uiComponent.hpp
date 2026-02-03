@@ -41,8 +41,8 @@ namespace vsrg {
         virtual void setZOrder(int z) { properties.z_order = z; }
         virtual int getZOrder() const { return properties.z_order; }
 
-        virtual void setRotation(float rotation) { properties.rotation = glm::radians(rotation); }
-        virtual float getRotation() const { return glm::degrees(properties.rotation); }
+        virtual void setRotation(float rotation) { properties.rotation = rotation; }
+        virtual float getRotation() const { return properties.rotation; }
 
         ComponentProperties& getProperties() { return properties; }
         void setProperties(ComponentProperties _properties) { properties = _properties; }

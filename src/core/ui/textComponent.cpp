@@ -91,7 +91,7 @@ namespace vsrg {
 		transform = glm::translate(transform, glm::vec3(-anchor_offset, 0.0f));
 
 		if (properties.rotation != 0.0f) {
-			transform = glm::rotate(transform, properties.rotation, glm::vec3(0.0f, 0.0f, 1.0f));
+			transform = glm::rotate(transform, glm::radians(properties.rotation), glm::vec3(0.0f, 0.0f, 1.0f));
 		}
 
 		if (properties.scale != glm::vec2(1.0f)) {

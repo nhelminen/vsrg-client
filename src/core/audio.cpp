@@ -103,6 +103,13 @@ namespace vsrg
 
     void AudioManager::unload_all_audios()
     {
+        for (Audio *audio : loaded_audios)
+        {
+            if (audio)
+            {
+                delete audio;
+            }
+        }
         loaded_audios.clear();
     }
 

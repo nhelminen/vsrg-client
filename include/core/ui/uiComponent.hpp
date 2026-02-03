@@ -45,7 +45,7 @@ namespace vsrg {
         virtual float getRotation() const { return glm::degrees(properties.rotation); }
 
         ComponentProperties& getProperties() { return properties; }
-        const ComponentProperties& getProperties() const { return properties; }
+        void setProperties(ComponentProperties _properties) { properties = _properties; }
     protected:
         EngineContext* engine_context;
         ComponentProperties properties;

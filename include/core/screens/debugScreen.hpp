@@ -2,7 +2,7 @@
 
 #include "core/screen.hpp"
 #include "core/font.hpp"
-#include "core/textComponent.hpp"
+#include "core/ui/textComponent.hpp"
 
 #include <glad/glad.h>
 #include <SDL3/SDL.h>

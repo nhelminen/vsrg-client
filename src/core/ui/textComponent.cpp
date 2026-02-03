@@ -1,4 +1,4 @@
-#include "core/textComponent.hpp"
+#include "core/ui/textComponent.hpp"
 #include "core/shader.hpp"
 
 #define GLM_FORCE_RADIANS
@@ -37,7 +37,8 @@ namespace vsrg {
     }
 )glsl";
 
-	TextComponent::TextComponent(EngineContext* engine_context, Font* font, const std::string& text, const TextRenderOptions& render_options) : engine_context(engine_context), font(font), render_options(render_options) {
+	TextComponent::TextComponent(EngineContext* engine_context, Font* font, const std::string& text, const TextRenderOptions& text_options) 
+		: UIComponent(engine_context), font(font), text_options(text_options) {
 		setText(text);
 
 		shader_program = createShaderProgram(engine_context, vertex_shader_source, fragment_shader_source);
@@ -61,17 +62,17 @@ namespace vsrg {
 		drawable_string.dimensions = calculateDimensions(drawable_string.text);
 	}
 
-	void TextComponent::setRenderOptions(const TextRenderOptions& options) {
-		render_options = options;
+	void TextComponent::setTextOptions(const TextRenderOptions& options) {
+		text_options = options;
 		drawable_string.dimensions = calculateDimensions(drawable_string.text);
 	}
 		
 	void TextComponent::render() {
-		if (drawable_string.text.empty()) return;
+		if (!properties.visible || drawable_string.text.empty()) return;
 
 		glUseProgram(shader_program);
 
-		glUniform3f(color_uniform, render_options.color.x, render_options.color.y, render_options.color.z);
+		glUniform3f(color_uniform, text_options.color.x, text_options.color.y, text_options.color.z);
 
 		glm::mat4 projection = glm::ortho(0.0f, (float)engine_context->get_screen_width(), (float)engine_context->get_screen_height(), 0.0f);
 		glUniformMatrix4fv(projection_uniform, 1, GL_FALSE, glm::value_ptr(projection));
@@ -80,16 +81,16 @@ namespace vsrg {
 		glUniform1i(atlas_uniform, 0);
 		glBindVertexArray(font->getVAO());
 
-		float current_x = render_options.position.x;
-		float current_y = render_options.position.y;
+		float current_x = properties.position.x;
+		float current_y = properties.position.y;
 
 		float scaling_factor = getScalingFactor();
-		float line_height = (font->getSizePt() + render_options.line_gap) * scaling_factor;
+		float line_height = (font->getSizePt() + text_options.line_gap) * scaling_factor;
 		GLuint last_texture_id = 0;
 
 		for (auto c = drawable_string.text.begin(); c != drawable_string.text.end(); c++) {
 			if (*c == '\n') {
-				current_x = render_options.position.x;
+				current_x = properties.position.x;
 				current_y += line_height;
 				continue;
 			}
@@ -132,7 +133,7 @@ namespace vsrg {
 	}
 
 	float TextComponent::getScalingFactor() const {
-		return render_options.size / font->getSizePt();
+		return text_options.size / font->getSizePt();
 	}
 
 	std::vector<Charcode> TextComponent::decodeUTF8(const std::string& str) {
@@ -217,7 +218,7 @@ namespace vsrg {
 
 		max_width = std::max(max_width, current_line_width);
 
-		float line_height = (font->getSizePt() + render_options.line_gap) * getScalingFactor();
+		float line_height = (font->getSizePt() + text_options.line_gap) * getScalingFactor();
 		float total_height = line_count * line_height;
 
 		return { max_width, total_height };

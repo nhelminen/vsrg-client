@@ -39,6 +39,8 @@ namespace vsrg
 			return;
 		}
 
+		SDL_GL_SetSwapInterval(0);
+
 		if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
 		{
 			SDL_GL_DestroyContext(gl_context);
@@ -93,10 +95,9 @@ namespace vsrg
 
 	Client::~Client()
 	{
-		if (engine_context != nullptr)
+		if (gl_context != nullptr && window != nullptr)
 		{
-			delete engine_context;
-			engine_context = nullptr;
+			SDL_GL_MakeCurrent(window, gl_context);
 		}
 
 		if (screen_manager != nullptr)
@@ -108,6 +109,11 @@ namespace vsrg
 		{
 			delete audio_manager;
 			audio_manager = nullptr;
+		}
+		if (engine_context != nullptr)
+		{
+			delete engine_context;
+			engine_context = nullptr;
 		}
 		if (debugger != nullptr)
 		{

@@ -75,7 +75,7 @@ namespace vsrg
             }
         }
 
-        std::string audioDir = getAssetPath("audio.mp3");
+        std::string audioDir = getAssetPath("sounds/audio.mp3");
 
         Audio* loaded_audio = nullptr;
         AudioResult audioResult = audio_manager->load_audio(audioDir);
@@ -91,7 +91,7 @@ namespace vsrg
                 debugger->log(DebugLevel::INFO, 
                     "Audio playing successfully. Status: " + std::to_string(audioResult.status), 
                     __FILE__, __LINE__);
-                    
+
                 audioResult.audio->set_volume(0.1f);
                 audioResult.audio->set_looping(true);
                 audioResult.audio->set_playback_rate(2.0f);

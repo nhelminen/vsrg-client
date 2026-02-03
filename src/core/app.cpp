@@ -85,10 +85,7 @@ namespace vsrg
 		screen_manager = new ScreenManager(engine_context);
 		VSRG_LOG(*debugger, DebugLevel::INFO, "ScreenManager created");
 
-		// update the engine context with the created managers
 		engine_context->update();
-
-		// add default init screen
 		screen_manager->add_screen(std::make_unique<InitScreen>(engine_context));
 
 		gl_initialized = true;
@@ -135,7 +132,7 @@ namespace vsrg
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-		// initialize timing (not the final solution cause sdl performance counters are horribly inaccurate)
+		// initialize timing (not the final solution, need a separate thread for timing management for accurate results)
 		last_time = Clock::now();
 
 		SDL_Event event;

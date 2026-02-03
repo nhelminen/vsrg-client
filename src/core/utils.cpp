@@ -52,6 +52,11 @@ namespace vsrg
         return path;
     }
 
+    std::string getAssetPath(std::string asset) {
+        std::string execDir = getExecutableDir();
+        return joinPaths(execDir, "assets", asset);
+    }
+
     std::string getCurrentDate()
     {
         auto now = system_clock::now();

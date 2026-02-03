@@ -1,5 +1,6 @@
 #include "core/screens/initScreen.hpp"
 #include "core/debug.hpp"
+
 #include "public/engineContext.hpp"
 
 #include "core/screens/testScreen.hpp"
@@ -10,7 +11,6 @@ namespace vsrg {
         : Screen(engine_context, "InitScreen", 0)
     {
         engine_context->get_debugger()->log(DebugLevel::INFO, "InitScreen loaded", __FILE__, __LINE__);
-        // for testing, add test screen after init
         engine_context->get_screen_manager()->add_screen(std::make_unique<TestScreen>(engine_context));
     }
 

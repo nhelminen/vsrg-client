@@ -17,7 +17,10 @@ namespace vsrg
         ((result /= std::forward<Args>(args)), ...);
         return result.string();
     }
+
     std::string getExecutableDir();
+    std::string getAssetPath(std::string asset);
+
     std::string getCurrentDate();
     std::string getCurrentTimestamp(bool showMs = true);
 }

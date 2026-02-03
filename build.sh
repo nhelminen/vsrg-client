@@ -12,7 +12,7 @@ build(){
 	fi
 
 	cmake --preset "$PRESET" || { echo "CMake configuration failed"; exit 1; }
-	cmake --build --preset "$PRESET" || { echo "Build process failed"; exit 1; }
+	cmake --build out/build/$PRESET || { echo "Build process failed"; exit 1; }
 
 	if [[ $run == true ]]; then
 		exec ./out/build/$PRESET/bin/vsrg-client

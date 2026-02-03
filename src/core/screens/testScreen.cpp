@@ -1,4 +1,4 @@
-#include "core/screens/TestScreen.hpp"
+#include "core/screens/testScreen.hpp"
 #include "core/debug.hpp"
 #include "core/shader.hpp"
 #include "core/audio.hpp"

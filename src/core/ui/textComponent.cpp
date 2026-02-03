@@ -70,7 +70,7 @@ namespace vsrg {
 	}
 		
 	void TextComponent::render() {
-		if (!properties.visible || drawable_string.text.empty()) return;
+		if (!properties.visible || properties.opacity == 0.0f || drawable_string.text.empty()) return;
 
 		glUseProgram(shader_program);
 

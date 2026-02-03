@@ -1,23 +1,43 @@
 #! /usr/bin/env bash
 
 build(){
-	cmake -E remove CMakeCache.txt
-	cmake -E remove_directory CMakeFiles
-	
-	cmake -E make_directory build
-	cmake -E chdir build cmake ..
+	if [[ $clean == true ]]; then
+		rm -rf out/
+	fi
 
+	if [[ $release == true ]]; then
+		PRESET="linux-release"
+	else
+		PRESET="linux-debug"
+	fi
+
+	cmake --preset "$PRESET" || { echo "CMake configuration failed"; exit 1; }
+	cmake --build --preset "$PRESET" || { echo "Build process failed"; exit 1; }
 
 	if [[ $run == true ]]; then
-		exec ./build/bin/vsrg-client
+		exec ./out/build/$PRESET/bin/vsrg-client
 	fi
 }
 
 run=false;
-if [[ "$1" == "run" ]]; then
-	run=true;
-fi
+clean=false;
+release=false;
+
+for arg in "$@"; do
+	case $arg in
+		--run)
+			run=true
+			shift
+			;;
+		--clean)
+			clean=true
+			shift
+			;;
+		--release)
+			release=true
+			shift
+			;;
+	esac
+done
 
 build || echo "Build failed" && exit 1;
-
-

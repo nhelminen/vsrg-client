@@ -95,11 +95,6 @@ namespace vsrg
 
 	Client::~Client()
 	{
-		if (gl_context != nullptr && window != nullptr)
-		{
-			SDL_GL_MakeCurrent(window, gl_context);
-		}
-
 		if (screen_manager != nullptr)
 		{
 			delete screen_manager;

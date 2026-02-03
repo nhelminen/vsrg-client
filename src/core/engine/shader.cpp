@@ -1,4 +1,4 @@
-#include "core/shader.hpp"
+#include "core/engine/shader.hpp"
 #include "core/debug.hpp"
 
 namespace vsrg {

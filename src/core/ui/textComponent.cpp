@@ -1,5 +1,5 @@
 #include "core/ui/textComponent.hpp"
-#include "core/shader.hpp"
+#include "core/engine/shader.hpp"
 
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>

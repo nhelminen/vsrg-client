@@ -1,7 +1,7 @@
 #include "core/screens/debugScreen.hpp"
+#include "core/engine/shader.hpp"
+#include "core/engine/audio.hpp"
 #include "core/debug.hpp"
-#include "core/shader.hpp"
-#include "core/audio.hpp"
 #include "core/utils.hpp"
 
 #include "public/engineContext.hpp"

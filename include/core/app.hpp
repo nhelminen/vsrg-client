@@ -6,9 +6,9 @@
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 
-#include "core/audio.hpp"
+#include "core/engine/audio.hpp"
+#include "core/engine/screen.hpp"
 #include "core/debug.hpp"
-#include "core/screen.hpp"
 
 #include "public/engineContext.hpp"
 

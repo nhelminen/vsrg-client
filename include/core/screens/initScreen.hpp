@@ -1,6 +1,6 @@
 #pragma once
 
-#include "core/screen.hpp"
+#include "core/engine/screen.hpp"
 
 #include <glad/glad.h>
 #include <SDL3/SDL.h>

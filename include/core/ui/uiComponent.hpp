@@ -1,7 +1,7 @@
 #pragma once
 
 #include "public/engineContext.hpp"
-#include "core/shader.hpp"
+#include "core/engine/shader.hpp"
 
 namespace vsrg {
     struct ComponentProperties {

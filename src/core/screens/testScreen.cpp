@@ -1,6 +1,8 @@
 #include "core/screens/TestScreen.hpp"
 #include "core/debug.hpp"
 #include "core/shader.hpp"
+#include "core/audio.hpp"
+#include "core/utils.hpp"
 
 #include "public/engineContext.hpp"
 
@@ -63,7 +65,55 @@ namespace vsrg
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
 
-        engine_context->get_debugger()->log(DebugLevel::INFO, "TestScreen loaded", __FILE__, __LINE__);
+        Debugger* debugger = engine_context->get_debugger();
+        debugger->log(DebugLevel::INFO, "TestScreen loaded", __FILE__, __LINE__);
+
+        AudioManager* audio_manager = engine_context->get_audio_manager();
+        if (audio_manager) {
+            LatencyInfo latency = audio_manager->get_latency_info();
+            if (latency.valid) {
+                debugger->log(DebugLevel::INFO, 
+                    "Audio latency: " + std::to_string(latency.period_size_in_milliseconds) + "ms, " +
+                    "Sample rate: " + std::to_string(latency.sample_rate) + "hz, " +
+                    "Period size: " + std::to_string(latency.period_size_in_frames) + " frames",
+                    __FILE__, __LINE__);
+            } else {
+                debugger->log(DebugLevel::WARNING, "Could not retrieve audio latency info", __FILE__, __LINE__);
+            }
+        }
+
+        std::string audioDir = getAssetPath("sounds/audio.mp3");
+
+        Audio* loaded_audio = nullptr;
+        AudioResult audioResult = audio_manager->load_audio(audioDir);
+        
+        if (audioResult.status == MA_SUCCESS && audioResult.audio != nullptr) {
+            debugger->log(DebugLevel::INFO, 
+                "Loaded " + audioDir + " successfully. Status: " + std::to_string(audioResult.status), 
+                __FILE__, __LINE__);
+            loaded_audio = audioResult.audio;
+
+            AudioResult playResult = audio_manager->play_audio(audioResult.audio);
+            if (playResult.status == MA_SUCCESS) {
+                debugger->log(DebugLevel::INFO, 
+                    "Audio playing successfully. Status: " + std::to_string(audioResult.status), 
+                    __FILE__, __LINE__);
+
+                audioResult.audio->set_volume(0.1f);
+                audioResult.audio->set_looping(true);
+                audioResult.audio->set_playback_rate(2.0f);
+            } 
+            else
+            {
+                debugger->log(DebugLevel::ERROR, 
+                    "Audio failed to play. Status: " + std::to_string(playResult.status), 
+                    __FILE__, __LINE__);
+            }
+        } else {
+            debugger->log(DebugLevel::ERROR, 
+                "Failed to load audio. Status: " + std::to_string(audioResult.status), 
+                __FILE__, __LINE__);
+        }
     }
 
     TestScreen::~TestScreen()

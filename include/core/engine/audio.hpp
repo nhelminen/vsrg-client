@@ -66,6 +66,49 @@ namespace vsrg
             playback_rate = _playback_rate;
         };
         float get_playback_rate() { return playback_rate; }
+        float get_duration() {
+            if (!initialized) return 0.0f;
+
+            ma_result result;
+            ma_uint64 lengthInFrames;
+            ma_uint32 sampleRate;
+
+            result = ma_sound_get_length_in_pcm_frames(&sound, &lengthInFrames);
+            if (result != MA_SUCCESS) {
+                return 0.0f;
+            }
+
+            ma_sound_get_data_format(&sound, NULL, NULL, &sampleRate, NULL, 0);
+            if (sampleRate == 0) return 0.0f;
+
+            return (float)lengthInFrames / (float)sampleRate;
+        }
+        float get_position() {
+            if (!initialized) return 0.0f;
+            
+            ma_result result;
+            ma_uint64 cursorInFrames;
+            ma_uint32 sampleRate;
+
+            result = ma_sound_get_cursor_in_pcm_frames(&sound, &cursorInFrames);
+            if (result != MA_SUCCESS) {
+                return 0.0f;
+            }
+
+            ma_sound_get_data_format(&sound, NULL, NULL, &sampleRate, NULL, 0);
+            if (sampleRate == 0) return 0.0f;
+
+            return (float)cursorInFrames / (float)sampleRate;
+        }
+        void set_position(float time_in_seconds) {
+            if (!initialized) return;
+
+            ma_uint32 sampleRate;
+
+            ma_sound_get_data_format(&sound, NULL, NULL, &sampleRate, NULL, 0);
+            ma_uint64 frameIndex = (ma_uint64)(time_in_seconds * sampleRate);
+            ma_sound_seek_to_pcm_frame(&sound, frameIndex);
+        }
     private:
         bool initialized;
         ma_sound sound;

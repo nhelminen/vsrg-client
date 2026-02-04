@@ -17,9 +17,9 @@ namespace vsrg
     {
         ComponentProperties properties = {
             true,
-            0.5f, -4.0f,
+            1.0f, 0.0f,
             { 16.0f, 16.0f },
-            { 1.2f, 0.9f },
+            { 1.0f, 1.0f },
             { 0.0f, 0.0f },
         };
         TextRenderOptions text_options = { 
@@ -35,7 +35,7 @@ namespace vsrg
         ComponentProperties sprite_properties = {
             true,
             1.0f, 0.0f,
-            { 16.0f, 48.0f },
+            { 16.0f, 160.0f },
             { 2.0f, 2.0f },
             { 0.0f, 0.0f },
         };
@@ -60,8 +60,6 @@ namespace vsrg
         }
 
         std::string audioDir = getAssetPath("sounds/audio.mp3");
-
-        Audio* loaded_audio = nullptr;
         AudioResult audioResult = audio_manager->load_audio(audioDir);
         
         if (audioResult.status == MA_SUCCESS && audioResult.audio != nullptr) {
@@ -69,23 +67,12 @@ namespace vsrg
                 "Loaded " + audioDir + " successfully. Status: " + std::to_string(audioResult.status), 
                 __FILE__, __LINE__);
             loaded_audio = audioResult.audio;
+            audioResult.audio->set_volume(0.1f);
 
-            AudioResult playResult = audio_manager->play_audio(audioResult.audio);
-            if (playResult.status == MA_SUCCESS) {
-                debugger->log(DebugLevel::INFO, 
-                    "Audio playing successfully. Status: " + std::to_string(audioResult.status), 
-                    __FILE__, __LINE__);
-
-                audioResult.audio->set_volume(0.1f);
-                audioResult.audio->set_looping(true);
-                audioResult.audio->set_playback_rate(2.0f);
-            } 
-            else
-            {
-                debugger->log(DebugLevel::ERROR, 
-                    "Audio failed to play. Status: " + std::to_string(playResult.status), 
-                    __FILE__, __LINE__);
-            }
+            conductor = new Conductor(audio_manager, loaded_audio, {
+                { 0.0f, 220.0f, 4, 4 }
+            });
+            conductor->play();
         } else {
             debugger->log(DebugLevel::ERROR, 
                 "Failed to load audio. Status: " + std::to_string(audioResult.status), 
@@ -100,10 +87,32 @@ namespace vsrg
 
     void DebugScreen::update(float delta_time)
     {
+        if (conductor) 
+        {
+            conductor->update(delta_time);
+        }
+
         float fps = getFPS(delta_time);
         std::string memory = getFormattedMemoryUsage();
 
-        text_component.setText("FPS: " + std::to_string(static_cast<int>(fps)) + "\nMemory: " + memory);
+        std::stringstream textData;
+        textData << "FPS: " << static_cast<int>(fps) << "\n";
+        textData << "Memory: " << memory << "\n";
+
+        if (conductor != nullptr) 
+        {
+            glm::vec2 timeSig = conductor->get_time_signature();
+            
+            textData << "\nBPM: " << conductor->get_bpm() << "\n";
+            textData << "Time: " << std::fixed << std::setprecision(2) << conductor->get_song_position();
+            textData << " / " << conductor->get_song_duration() << "\n";
+            textData << "Signature: " << static_cast<int>(timeSig.x) << "/" << static_cast<int>(timeSig.y) << "\n\n";
+
+            textData << "Beat: " << conductor->get_beat() << "\n";
+            textData << "Step: " << conductor->get_step() << "\n";
+        }
+
+        text_component.setText(textData.str());
     }
 
     void DebugScreen::render()

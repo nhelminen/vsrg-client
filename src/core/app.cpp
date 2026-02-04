@@ -87,7 +87,10 @@ namespace vsrg
 		screen_manager = new ScreenManager(engine_context);
 		VSRG_LOG(*debugger, DebugLevel::INFO, "ScreenManager created");
 
+		plugin_manager = new PluginManager(engine_context);
 		engine_context->update();
+
+    	plugin_manager->discover_plugins("./plugins");
 		screen_manager->add_screen(std::make_unique<InitScreen>(engine_context));
 
 		gl_initialized = true;
@@ -95,6 +98,11 @@ namespace vsrg
 
 	Client::~Client()
 	{
+		if (plugin_manager != nullptr)
+		{
+			delete plugin_manager;  // unloads all plugins automatically gg
+			plugin_manager = nullptr;
+		}
 		if (screen_manager != nullptr)
 		{
 			delete screen_manager;

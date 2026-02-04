@@ -1,0 +1,15 @@
+cmake_minimum_required(VERSION 3.28)
+project(vsrg-plugins)
+
+file(GLOB PLUGIN_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/*")
+foreach(PLUGIN_DIR ${PLUGIN_DIRS})
+    if(IS_DIRECTORY ${PLUGIN_DIR})
+        if(EXISTS "${PLUGIN_DIR}/CMakeLists.txt")
+            get_filename_component(PLUGIN_NAME ${PLUGIN_DIR} NAME)
+            message(STATUS "Found plugin: ${PLUGIN_NAME}")
+            add_subdirectory(${PLUGIN_DIR})
+        endif()
+    endif()
+endforeach()
+
+file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/bin/plugins")

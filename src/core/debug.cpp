@@ -115,11 +115,20 @@ namespace vsrg
         std::string prefix = levelToString(level);
         std::string timestamp = getCurrentTimestamp();
 
-        std::string filename = std::filesystem::path(file).filename().string();
+        std::filesystem::path fullPath(file);
+        std::filesystem::path rootPath(VSRG_PROJECT_ROOT);
+
+        std::string displayPath;
+        try {
+            displayPath = std::filesystem::relative(fullPath, rootPath).string();
+            std::replace(displayPath.begin(), displayPath.end(), '\\', '/');
+        } catch (...) {
+            displayPath = fullPath.filename().string();
+        }
 
         std::stringstream logOutput;
         logOutput << timestamp << " " << prefix;
-        logOutput << " [" << filename << ":" << line << "]";
+        logOutput << " [" << displayPath << ":" << line << "]";
         logOutput << " " << message;
 
         std::string finalLog = logOutput.str();

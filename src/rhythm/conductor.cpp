@@ -24,7 +24,6 @@ namespace vsrg
     Conductor::~Conductor()
     {
         stop();
-        // i will clear up everything later i kinda forgor
     }
 
     void Conductor::play()

@@ -56,7 +56,6 @@ namespace vsrg
         float song_duration = 0.0f;
 
         float last_hardware_position = 0.0f;
-        float interpolation_timer = 0.0f;
         float cached_latency = 0.0f;
 
         int current_beat = 0;

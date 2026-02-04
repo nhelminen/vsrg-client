@@ -1,6 +1,7 @@
 #include "core/screens/debugScreen.hpp"
 #include "core/engine/shader.hpp"
 #include "core/engine/audio.hpp"
+#include "core/engine/plugin.hpp"
 #include "core/debug.hpp"
 #include "core/utils.hpp"
 
@@ -78,6 +79,10 @@ namespace vsrg
                 "Failed to load audio. Status: " + std::to_string(audioResult.status), 
                 __FILE__, __LINE__);
         }
+
+        IGamePlugin* plugin = engine_context->get_plugin_manager()->find_plugin("mania");
+        engine_context->get_plugin_manager()->activate_plugin(plugin->get_info().name);
+        plugin->load();
     }
 
     DebugScreen::~DebugScreen()

@@ -25,6 +25,14 @@ file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
 add_executable(${PROJECT_NAME} ${SOURCES})
 target_link_libraries(${PROJECT_NAME} PRIVATE "3rdparty")
 
+target_compile_definitions(${PROJECT_NAME} PRIVATE 
+    VSRG_PROJECT_ROOT="${CMAKE_SOURCE_DIR}/"
+)
+
+if(EXISTS "${PROJECT_SOURCE_DIR}/plugins")
+	add_subdirectory("plugins")
+endif()
+
 if(EXISTS "${PROJECT_SOURCE_DIR}/assets")
 	add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 		COMMAND ${CMAKE_COMMAND} -E copy_directory

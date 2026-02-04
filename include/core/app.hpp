@@ -8,6 +8,7 @@
 
 #include "core/engine/audio.hpp"
 #include "core/engine/screen.hpp"
+#include "core/engine/plugin.hpp"
 #include "core/debug.hpp"
 
 #include "public/engineContext.hpp"
@@ -35,6 +36,7 @@ namespace vsrg {
 		Debugger* get_debugger() const { return debugger; }
 		AudioManager* get_audio_manager() const { return audio_manager; }
 		ScreenManager* get_screen_manager() const { return screen_manager; }
+		PluginManager* get_plugin_manager() const { return plugin_manager; }
 
 		EngineContext* get_engine_context() const { return engine_context; }
 	private:
@@ -50,6 +52,7 @@ namespace vsrg {
 		Debugger* debugger = nullptr;
 		AudioManager* audio_manager = nullptr;
 		ScreenManager* screen_manager = nullptr;
+		PluginManager* plugin_manager = nullptr;
 		
 		int SCREEN_WIDTH;
 		int SCREEN_HEIGHT;

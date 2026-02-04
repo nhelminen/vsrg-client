@@ -13,6 +13,7 @@ namespace vsrg
         debugger = client->get_debugger();
         audio_manager = client->get_audio_manager();
         screen_manager = client->get_screen_manager();
+        plugin_manager = client->get_plugin_manager();
     }
 
     int EngineContext::get_screen_width() const

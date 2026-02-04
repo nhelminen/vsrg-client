@@ -7,6 +7,7 @@
 #include <mutex>
 #include <queue>
 #include <thread>
+#include <algorithm>
 #include <condition_variable>
 
 namespace vsrg {
@@ -23,7 +24,7 @@ namespace vsrg {
         Debugger();
         ~Debugger();
 
-        void log(DebugLevel level, const std::string& message, const char* file, int line);
+        virtual void log(DebugLevel level, const std::string& message, const char* file, int line);
     private:
         bool saveToFile = true;
         bool running = true;

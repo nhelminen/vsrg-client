@@ -1,4 +1,5 @@
 #include "core/app.hpp"
+#include "core/utils.hpp"
 #include "core/screens/initScreen.hpp"
 
 #include <iostream>
@@ -90,7 +91,9 @@ namespace vsrg
 		plugin_manager = new PluginManager(engine_context);
 		engine_context->update();
 
-    	plugin_manager->discover_plugins("./plugins");
+		std::string execDir = getExecutableDir();
+		std::string pluginDir = joinPaths(execDir, "plugins");
+    		plugin_manager->discover_plugins(pluginDir);
 		screen_manager->add_screen(std::make_unique<InitScreen>(engine_context));
 
 		gl_initialized = true;

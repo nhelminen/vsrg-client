@@ -29,7 +29,7 @@ namespace vsrg
 #ifdef _WIN32
         return (void*)LoadLibraryA(path.c_str());
 #else
-        return dlopen(path.c_str(), RTLD_LAZY);
+        return dlopen(path.c_str(), RTLD_NOW);
 #endif
     }
 
@@ -51,7 +51,14 @@ namespace vsrg
 #ifdef _WIN32
         return (void*)GetProcAddress((HMODULE)handle, function_name.c_str());
 #else
-        return dlsym(handle, function_name.c_str());
+	dlerror(); // clear old errors
+        void* sym = dlsym(handle, function_name.c_str());
+	const char* error = dlerror();
+	if (error)
+	{
+		return nullptr;
+	}
+	return sym;
 #endif
     }
 
@@ -175,10 +182,6 @@ namespace vsrg
             if (destroy_plugin)
             {
                 destroy_plugin(it->instance);
-            }
-            else
-            {
-                delete it->instance;
             }
         }
 

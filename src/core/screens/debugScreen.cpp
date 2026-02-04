@@ -81,8 +81,14 @@ namespace vsrg
         }
 
         IGamePlugin* plugin = engine_context->get_plugin_manager()->find_plugin("mania");
-        engine_context->get_plugin_manager()->activate_plugin(plugin->get_info().name);
-        plugin->load();
+	if (plugin != nullptr) {
+        	engine_context->get_plugin_manager()->activate_plugin(plugin->get_info().name);
+        	plugin->load();
+	} 
+	else
+	{
+	    engine_context->get_debugger()->log(DebugLevel::INFO, "plugin doesnt exist", __FILE__, __LINE__);
+	}
     }
 
     DebugScreen::~DebugScreen()

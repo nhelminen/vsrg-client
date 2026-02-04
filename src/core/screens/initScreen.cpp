@@ -3,7 +3,7 @@
 
 #include "public/engineContext.hpp"
 
-#include "core/screens/DebugScreen.hpp"
+#include "core/screens/debugScreen.hpp"
 #include <glad/glad.h>
 
 namespace vsrg {

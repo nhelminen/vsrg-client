@@ -1,7 +1,6 @@
 #include "core/screens/debugScreen.hpp"
 #include "core/engine/shader.hpp"
 #include "core/engine/audio.hpp"
-#include "core/engine/plugin.hpp"
 #include "core/debug.hpp"
 #include "core/utils.hpp"
 
@@ -80,15 +79,13 @@ namespace vsrg
                 __FILE__, __LINE__);
         }
 
-        IGamePlugin* plugin = engine_context->get_plugin_manager()->find_plugin("mania");
-	if (plugin != nullptr) {
-        	engine_context->get_plugin_manager()->activate_plugin(plugin->get_info().name);
-        	plugin->load();
-	} 
-	else
-	{
-	    engine_context->get_debugger()->log(DebugLevel::INFO, "plugin doesnt exist", __FILE__, __LINE__);
-	}
+        gameplay_plugin = engine_context->get_plugin_manager()->find_plugin("mania");
+        if (gameplay_plugin != nullptr) {
+            engine_context->get_plugin_manager()->activate_plugin(gameplay_plugin->get_info().name);
+            gameplay_plugin->load();
+        } else {
+            engine_context->get_debugger()->log(DebugLevel::INFO, "plugin doesnt exist", __FILE__, __LINE__);
+        }
     }
 
     DebugScreen::~DebugScreen()
@@ -101,6 +98,11 @@ namespace vsrg
         if (conductor) 
         {
             conductor->update(delta_time);
+        }
+
+        if (gameplay_plugin) 
+        {
+            gameplay_plugin->update(delta_time);
         }
 
         float fps = getFPS(delta_time);
@@ -128,6 +130,11 @@ namespace vsrg
 
     void DebugScreen::render()
     {
+        if (gameplay_plugin) 
+        {
+            gameplay_plugin->render();
+        }
+
         text_component.render();
         sprite_component.render();
     }

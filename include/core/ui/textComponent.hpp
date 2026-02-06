@@ -19,7 +19,7 @@ namespace vsrg {
 	class TextComponent : public UIComponent {
 	public:
 		TextComponent(EngineContext* engine_context, Font* font, const std::string& text = "", const TextRenderOptions& text_options = TextRenderOptions{});
-		~TextComponent();
+		virtual ~TextComponent();
 
 		void setText(const std::string& text);
 		void setFont(Font* new_font);
@@ -46,5 +46,4 @@ namespace vsrg {
 		TextRenderOptions text_options;
 		DrawableString drawable_string;
 	};
-
 }

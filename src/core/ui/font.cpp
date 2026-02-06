@@ -32,13 +32,13 @@ namespace vsrg {
 				std::string("Font loaded: ") + path,
 				__FILE__, __LINE__);
 			engine_context->get_debugger()->log(DebugLevel::INFO,
-				std::string("  Family: ") + face->family_name,
+				std::string(" Family: ") + face->family_name,
 				__FILE__, __LINE__);
 			engine_context->get_debugger()->log(DebugLevel::INFO,
-				std::string("  Style: ") + face->style_name,
+				std::string(" Style: ") + face->style_name,
 				__FILE__, __LINE__);
 			engine_context->get_debugger()->log(DebugLevel::INFO,
-				std::string("  Glyphs: ") + std::to_string(face->num_glyphs),
+				std::string(" Glyphs: ") + std::to_string(face->num_glyphs),
 				__FILE__, __LINE__);
 		}
 

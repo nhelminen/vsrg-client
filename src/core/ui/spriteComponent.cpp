@@ -3,7 +3,10 @@
 #include "core/debug.hpp"
 #include "core/utils.hpp"
 
+#ifndef STB_IMAGE_IMPLEMENTATION_DONE
 #define STB_IMAGE_IMPLEMENTATION
+#define STB_IMAGE_IMPLEMENTATION_DONE
+#endif
 #include <stb_image.h>
 
 #define GLM_FORCE_RADIANS
@@ -125,7 +128,10 @@ namespace vsrg {
 		glUseProgram(shader_program);
 		glUniform1f(opacity_uniform, properties.opacity);
 
-		glm::vec2 dims = getDimensions();
+		glm::vec2 dims = (properties.render_size.x > 0.0f && properties.render_size.y > 0.0f) 
+			? properties.render_size 
+			: dimensions;
+
 		glm::vec2 anchor_offset = dims * properties.anchor;
 
 		glm::mat4 projection = glm::ortho(
@@ -149,8 +155,8 @@ namespace vsrg {
 		glm::mat4 final_projection = projection * transform;
 		glUniformMatrix4fv(projection_uniform, 1, GL_FALSE, glm::value_ptr(final_projection));
 
-		float w = dimensions.x;
-		float h = dimensions.y;
+		float w = dims.x;
+		float h = dims.y;
 
 		float vertices[6][4] = {
 			{0.0f, h, 0.0f, 1.0f},

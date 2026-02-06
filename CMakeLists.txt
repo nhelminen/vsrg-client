@@ -2,7 +2,7 @@
 set(PROJECT_NAME "vsrg-client")
 project(${PROJECT_NAME} VERSION 0.0.0)
 
-set(BUILD_SHARED_LIBS FALSE)
+set(BUILD_SHARED_LIBS TRUE)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -17,18 +17,32 @@ add_subdirectory("3rdparty")
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
-file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
+file(GLOB_RECURSE ENGINE_SOURCES CONFIGURE_DEPENDS
 	"src/*.[ch]pp"
 	"src/*.[ch]"
 	"3rdparty/glad/src/glad.c"
 )
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX ".*main\\.cpp$")
 
-add_executable(${PROJECT_NAME} ${SOURCES})
-target_link_libraries(${PROJECT_NAME} PRIVATE "3rdparty")
+add_library(vsrg-engine SHARED ${ENGINE_SOURCES})
 
-target_compile_definitions(${PROJECT_NAME} PRIVATE 
+if(WIN32)
+    set_target_properties(vsrg-engine PROPERTIES
+        WINDOWS_EXPORT_ALL_SYMBOLS ON
+    )
+endif()
+target_link_libraries(vsrg-engine PUBLIC "3rdparty" OpenGL::GL)
+
+target_compile_definitions(vsrg-engine PUBLIC 
     VSRG_PROJECT_ROOT="${CMAKE_SOURCE_DIR}/"
 )
+
+target_include_directories(vsrg-engine PUBLIC 
+    ${PROJECT_SOURCE_DIR}/include
+)
+
+add_executable(${PROJECT_NAME} "src/main.cpp")
+target_link_libraries(${PROJECT_NAME} PRIVATE vsrg-engine)
 
 if(EXISTS "${PROJECT_SOURCE_DIR}/plugins")
 	add_subdirectory("plugins")
@@ -41,4 +55,3 @@ if(EXISTS "${PROJECT_SOURCE_DIR}/assets")
 		"${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets"
 	)
 endif()
-

@@ -63,11 +63,11 @@ namespace vsrg
 		const char *version = reinterpret_cast<const char *>(glGetString(GL_VERSION));
 
 		if (vendor)
-			VSRG_LOG(*debugger, DebugLevel::INFO, std::string("Vendor: ") + vendor);
+			VSRG_LOG(*debugger, DebugLevel::INFO, std::string(" Vendor: ") + vendor);
 		if (renderer)
-			VSRG_LOG(*debugger, DebugLevel::INFO, std::string("Renderer: ") + renderer);
+			VSRG_LOG(*debugger, DebugLevel::INFO, std::string(" Renderer: ") + renderer);
 		if (version)
-			VSRG_LOG(*debugger, DebugLevel::INFO, std::string("Version: ") + version);
+			VSRG_LOG(*debugger, DebugLevel::INFO, std::string(" Version: ") + version);
 
 		glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
@@ -93,7 +93,8 @@ namespace vsrg
 
 		std::string execDir = getExecutableDir();
 		std::string pluginDir = joinPaths(execDir, "plugins");
-    		plugin_manager->discover_plugins(pluginDir);
+		
+    	plugin_manager->discover_plugins(pluginDir);
 		screen_manager->add_screen(std::make_unique<InitScreen>(engine_context));
 
 		gl_initialized = true;

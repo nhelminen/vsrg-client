@@ -3,6 +3,8 @@
 #include "core/engine/screen.hpp"
 #include "core/ui/font.hpp"
 
+#include "core/engine/plugin.hpp"
+
 #include "core/ui/textComponent.hpp"
 #include "core/ui/spriteComponent.hpp"
 
@@ -37,5 +39,7 @@ namespace vsrg {
 
         TextComponent text_component;
         SpriteComponent sprite_component;
+
+        IGamePlugin* gameplay_plugin;
     };
 }

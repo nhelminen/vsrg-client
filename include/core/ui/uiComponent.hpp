@@ -13,6 +13,7 @@ namespace vsrg {
 		glm::vec2 position = glm::vec2(0.0f);
         glm::vec2 scale = glm::vec2(1.0f);
         glm::vec2 anchor = glm::vec2(0.0f);
+        glm::vec2 render_size = glm::vec2(0.0f);
 	};
 
     class UIComponent {
@@ -42,6 +43,9 @@ namespace vsrg {
 
         virtual void setAnchor(const glm::vec2& anchor) { properties.anchor = anchor; }
         virtual glm::vec2 getAnchor() const { return properties.anchor; }
+
+        virtual void setSize(const glm::vec2& render_size) { properties.render_size = render_size; }
+        virtual glm::vec2 getSize() const { return properties.render_size; }
 
         ComponentProperties& getProperties() { return properties; }
         void setProperties(ComponentProperties _properties) { properties = _properties; }

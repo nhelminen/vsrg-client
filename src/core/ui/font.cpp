@@ -5,6 +5,7 @@
 #include <utility>
 #include <algorithm>
 #include <memory>
+#include <tuple>
 
 namespace vsrg {
 
@@ -14,10 +15,31 @@ namespace vsrg {
 				std::string("Failed to initialize FreeType."),
 				__FILE__, __LINE__);
 		}
+		loadFont("NotoSansJP-Regular.ttf", FONT_DEFAULT_SIZE_PT);
 	}
 
 	FontManager::~FontManager() {
+		fonts.clear();
 		FT_Done_FreeType(ft);
+	}
+
+	bool FontManager::loadFont(const std::string& name, int size_pt) {
+		std::string path = "assets/fonts/" + name;
+		auto [it, inserted] = fonts.emplace(std::piecewise_construct, std::forward_as_tuple(name), std::forward_as_tuple(engine_context, ft, path, size_pt));
+		return it->second.isLoaded();
+	}
+
+	Font* FontManager::getFont(const std::string& name) {
+		auto it = fonts.find(name);
+		if (it != fonts.end()) return &it->second;
+		else { 
+			if (loadFont(name)) {
+				return &fonts.at(name);
+			}
+			else {
+				return nullptr;
+			}
+		}
 	}
 
 	Font::Font(EngineContext* engine_context, FT_Library ft, const std::string& path, int size_pt) : engine_context(engine_context), size_pt(size_pt) {

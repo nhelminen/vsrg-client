@@ -30,10 +30,8 @@ namespace vsrg {
         
         void update(float delta_time) override;
         void render() override;
-    private:
-        FontManager font_manager;
-        Font font;
 
+    private:
         Conductor* conductor;
         Audio* loaded_audio;
 

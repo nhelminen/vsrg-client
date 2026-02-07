@@ -10,9 +10,7 @@ namespace vsrg
 {
     DebugScreen::DebugScreen(EngineContext* engine_context)
         : Screen(engine_context, "DebugScreen", 1),
-        font_manager(engine_context),
-        font(engine_context, font_manager.getFt(), "assets/fonts/NotoSansJP-Regular.ttf", 32),
-        text_component(engine_context, &font),
+        text_component(engine_context, engine_context->get_font_manager()->getFont("NotoSansJP-Regular.ttf")),
         sprite_component(engine_context, "matusa.png")
     {
         ComponentProperties properties = {

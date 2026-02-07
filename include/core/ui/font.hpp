@@ -19,6 +19,7 @@ namespace vsrg {
 	using Charcode = FT_ULong;
 
 	const unsigned int FONT_ATLAS_DEFAULT_SIZE = 2048;
+	const int FONT_DEFAULT_SIZE_PT = 32;
 
 	struct Character {
 		GLuint texture_id;
@@ -33,6 +34,12 @@ namespace vsrg {
 	public:
 		Font(EngineContext* engine_context, FT_Library ft, const std::string& path, int size_pt);
 		~Font();
+
+		Font(const Font&) = delete;
+		Font& operator=(const Font&) = delete;
+
+		Font(Font&&) noexcept = default;
+		Font& operator=(Font&&) noexcept = default;
 
 		bool isLoaded() const { return loaded; }
 		GLuint getVAO() const { return VAO; }
@@ -71,11 +78,13 @@ namespace vsrg {
 		FontManager(EngineContext* engine_context);
 		~FontManager();
 
-		FT_Library getFt() const { return ft; }
+		bool loadFont(const std::string& name, int size_pt = FONT_DEFAULT_SIZE_PT);
+		Font* getFont(const std::string& name);
 
 	private:
 		EngineContext* engine_context;
 		FT_Library ft;
+		std::unordered_map<std::string, Font> fonts;
 	};
 
 }

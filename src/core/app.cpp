@@ -85,6 +85,9 @@ namespace vsrg
 			VSRG_LOG(*debugger, DebugLevel::INFO, "AudioManager initialized successfully");
 		}
 
+		engine_context->update(); // Prevents debugger==nullptr crash
+		font_manager = new FontManager(engine_context);
+
 		screen_manager = new ScreenManager(engine_context);
 		VSRG_LOG(*debugger, DebugLevel::INFO, "ScreenManager created");
 
@@ -106,6 +109,10 @@ namespace vsrg
 		{
 			delete plugin_manager;  // unloads all plugins automatically gg
 			plugin_manager = nullptr;
+		}
+		if (font_manager != nullptr) {
+			delete font_manager;
+			font_manager = nullptr;
 		}
 		if (screen_manager != nullptr)
 		{

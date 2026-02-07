@@ -70,7 +70,7 @@ namespace vsrg {
 	}
 		
 	void TextComponent::render() {
-		if (!properties.visible || properties.opacity == 0.0f || drawable_string.text.empty()) return;
+		if (!properties.visible || properties.opacity == 0.0f || drawable_string.text.empty() || font == nullptr) return;
 
 		glUseProgram(shader_program);
 
@@ -157,6 +157,7 @@ namespace vsrg {
 	}
 
 	float TextComponent::getScalingFactor() const {
+		if (font == nullptr) return text_options.size;
 		return text_options.size / font->getSizePt();
 	}
 
@@ -203,7 +204,7 @@ namespace vsrg {
 	}
 
 	glm::vec2 TextComponent::calculateDimensions(const std::vector<Charcode>& text) {
-		if (text.empty()) {
+		if (text.empty() || font == nullptr) {
 			return { 0, 0 };
 		}
 

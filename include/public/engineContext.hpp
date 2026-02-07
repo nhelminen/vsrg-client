@@ -7,6 +7,7 @@ namespace vsrg
 	class AudioManager;
 	class ScreenManager;
     class PluginManager;
+    class FontManager;
 
     // this is a safe interface to expose to screens or any future plugins
     class EngineContext
@@ -29,6 +30,7 @@ namespace vsrg
         AudioManager* get_audio_manager() const { return audio_manager; }
         ScreenManager* get_screen_manager() const { return screen_manager; }
         PluginManager* get_plugin_manager() const { return plugin_manager; }
+        FontManager* get_font_manager() const { return font_manager; }
 
         // convenience getters for common data (define in cpp)
         int get_screen_width() const;
@@ -43,5 +45,6 @@ namespace vsrg
         AudioManager* audio_manager;
         ScreenManager* screen_manager;
         PluginManager* plugin_manager;
+        FontManager* font_manager;
     };
 }

@@ -1,33 +1,28 @@
 #pragma once
 
-#include "public/engineContext.hpp"
-#include "core/ui/uiComponent.hpp"
-
 #include <memory>
 #include <string>
 
+#include "core/ui/sprite.hpp"
+#include "core/ui/texture.hpp"
+#include "core/ui/uiComponent.hpp"
+#include "public/engineContext.hpp"
+
+
 namespace vsrg {
-    class SpriteComponent : public UIComponent {
-	public:
-		SpriteComponent(EngineContext* engine_context, const std::string& spritePath);
-		virtual ~SpriteComponent();
+class SpriteComponent : public UIComponent {
+public:
+    SpriteComponent(EngineContext *engine_context, const std::string &spritePath);
+    virtual ~SpriteComponent();
 
-        void render() override;
-		glm::vec2 getDimensions() const override { return dimensions; }
-		
-    private:
-        void loadTexture(const std::string& path);
-		void setupBuffers();
+    void render() override;
+    glm::vec2 getSize() const override;
 
-        GLuint shader_program = 0;
-		GLuint texture_id = 0;
-		GLuint vao = 0;
-		GLuint vbo = 0;
+    bool isLoaded() const { return loaded; }
 
-		GLint projection_uniform;
-        GLint texture_uniform;
-		GLint opacity_uniform;
-
-		glm::vec2 dimensions;
-    };
-}
+private:
+    std::string texture_path;
+    glm::vec2 dimensions;
+    bool loaded = false;
+};
+}  // namespace vsrg

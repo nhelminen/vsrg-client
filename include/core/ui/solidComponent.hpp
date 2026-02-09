@@ -1,32 +1,34 @@
 #pragma once
 
-#include "public/engineContext.hpp"
 #include "core/ui/uiComponent.hpp"
+#include "public/engineContext.hpp"
 
 namespace vsrg {
-    class SolidComponent : public UIComponent {
-    public:
-        SolidComponent(EngineContext* engine_context, const glm::vec4& color);
-        virtual ~SolidComponent();
+class SolidComponent : public UIComponent {
+public:
+    SolidComponent(EngineContext *engine_context, const glm::vec4 &color);
+    virtual ~SolidComponent();
 
-        void render() override;
-        glm::vec2 getDimensions() const override { return dimensions; }
-        
-        void setColor(const glm::vec4& color) { this->color = color; }
-        glm::vec4 getColor() const { return color; }
+    void render() override;
 
-    private:
-        void setupBuffers();
+    glm::vec2 getSize() const override { return dimensions; }
 
-        GLuint shader_program = 0;
-        GLuint vao = 0;
-        GLuint vbo = 0;
+    void setColor(const glm::vec4 &color) { this->color = color; }
+    glm::vec4 getColor() const { return color; }
 
-        GLint projection_uniform;
-        GLint color_uniform;
-        GLint opacity_uniform;
+private:
+    void setupBuffers();
 
-        glm::vec2 dimensions;
-        glm::vec4 color;
-    };
-}
+    GLuint shader_program = 0;
+    GLuint vao = 0;
+    GLuint vbo = 0;
+
+    GLint projection_uniform;
+    GLint color_uniform;
+    GLint opacity_uniform;
+    GLint z_order_uniform;
+
+    glm::vec2 dimensions;
+    glm::vec4 color;
+};
+}  // namespace vsrg

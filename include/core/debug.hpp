@@ -1,46 +1,42 @@
 #pragma once
 
-#include <iostream>
-#include <string>
-#include <filesystem>
-#include <fstream>
-#include <mutex>
-#include <queue>
-#include <thread>
 #include <algorithm>
 #include <condition_variable>
+#include <filesystem>
+#include <fstream>
+#include <iostream>
+#include <mutex>
+#include <queue>
+#include <string>
+#include <thread>
+
 
 namespace vsrg {
-    enum class DebugLevel {
-        NONE,
-        ERROR,
-        WARNING,
-        INFO,
-        DEBUG
-    };
+enum class DebugLevel { NONE, ERROR, WARNING, INFO, DEBUG };
 
-    class Debugger {
-    public:
-        Debugger();
-        ~Debugger();
+class Debugger {
+public:
+    Debugger();
+    ~Debugger();
 
-        virtual void log(DebugLevel level, const std::string& message, const char* file, int line);
-    private:
-        bool saveToFile = true;
-        bool running = true;
+    virtual void log(DebugLevel level, const std::string& message, const char* file, int line);
 
-        std::string levelToString(DebugLevel level);
+private:
+    bool saveToFile = true;
+    bool running = true;
 
-        std::ofstream logFile;
-        std::mutex logMutex;
+    std::string levelToString(DebugLevel level);
 
-        std::queue<std::string> logQueue;
-        std::condition_variable logNotify;
-        std::thread logThread;
+    std::ofstream logFile;
+    std::mutex logMutex;
 
-        void processQueue();
-    };
-}
+    std::queue<std::string> logQueue;
+    std::condition_variable logNotify;
+    std::thread logThread;
+
+    void processQueue();
+};
+}  // namespace vsrg
 
 // create a macro so i can catch file and line automatically
 #define VSRG_LOG(debugger, level, message) (debugger).log(level, message, __FILE__, __LINE__)

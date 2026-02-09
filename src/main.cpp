@@ -2,10 +2,9 @@
 
 using namespace vsrg;
 
-int main(int argc, char *argv[])
-{
-	Client client;
-	client.start();
+int main(int argc, char *argv[]) {
+    Client client;
+    client.start();
 
-	return 0;
+    return 0;
 }

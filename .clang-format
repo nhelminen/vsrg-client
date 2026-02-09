@@ -1,5 +1,4 @@
-# Based on Google's coding standards
-BasedOnStyle: Google
+BasedOnStyle: LLVM
 IndentWidth: 4
 ColumnLimit: 100
 SortIncludes: false
@@ -7,5 +6,4 @@ AccessModifierOffset: -4
 AlignAfterOpenBracket: Align
 AlignOperands: true
 AllowShortFunctionsOnASingleLine: Inline
-# Ensures pointers align to the type, e.g., int* p;
 PointerAlignment: Left

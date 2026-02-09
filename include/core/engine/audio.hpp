@@ -1,5 +1,6 @@
 #pragma once
 
+#define MA_ENABLE_VORBIS
 #include <miniaudio.h>
 
 #include <algorithm>
@@ -8,7 +9,6 @@
 #include <vector>
 
 #include "public/engineContext.hpp"
-
 
 namespace vsrg {
 // i will use this later to sort sound groups, for now does nothing
@@ -30,7 +30,7 @@ public:
         }
     }
 
-    ma_sound *get_sound() { return &sound; }
+    ma_sound* get_sound() { return &sound; }
     bool is_initialized() { return initialized; }
 
     void set_paused(bool paused) { is_paused = paused; }
@@ -61,7 +61,8 @@ public:
     };
     float get_playback_rate() { return playback_rate; }
     float get_duration() {
-        if (!initialized) return 0.0f;
+        if (!initialized)
+            return 0.0f;
 
         ma_result result;
         ma_uint64 lengthInFrames;
@@ -73,12 +74,14 @@ public:
         }
 
         ma_sound_get_data_format(&sound, NULL, NULL, &sampleRate, NULL, 0);
-        if (sampleRate == 0) return 0.0f;
+        if (sampleRate == 0)
+            return 0.0f;
 
         return (float)lengthInFrames / (float)sampleRate;
     }
     float get_position() {
-        if (!initialized) return 0.0f;
+        if (!initialized)
+            return 0.0f;
 
         ma_result result;
         ma_uint64 cursorInFrames;
@@ -90,12 +93,14 @@ public:
         }
 
         ma_sound_get_data_format(&sound, NULL, NULL, &sampleRate, NULL, 0);
-        if (sampleRate == 0) return 0.0f;
+        if (sampleRate == 0)
+            return 0.0f;
 
         return (float)cursorInFrames / (float)sampleRate;
     }
     void set_position(float time_in_seconds) {
-        if (!initialized) return;
+        if (!initialized)
+            return;
 
         ma_uint32 sampleRate;
 
@@ -119,21 +124,21 @@ private:
 
 struct AudioResult {
     ma_result status;
-    Audio *audio;
+    Audio* audio;
 };
 
 class AudioManager {
 public:
-    AudioManager(EngineContext *engine_context);
+    AudioManager(EngineContext* engine_context);
     ~AudioManager();
 
     bool is_initialized() const { return initialized; }
 
     AudioResult load_audio(std::string file_path);
-    AudioResult unload_audio(Audio *audio);
+    AudioResult unload_audio(Audio* audio);
 
-    AudioResult play_audio(Audio *audio);
-    AudioResult stop_audio(Audio *audio);
+    AudioResult play_audio(Audio* audio);
+    AudioResult stop_audio(Audio* audio);
 
     void stop_all_audios();
     void unload_all_audios();
@@ -141,10 +146,10 @@ public:
     LatencyInfo get_latency_info();
 
 private:
-    EngineContext *engine_context;
+    EngineContext* engine_context;
     bool initialized = false;
     ma_engine engine;
 
-    std::vector<Audio *> loaded_audios;
+    std::vector<Audio*> loaded_audios;
 };
-}  // namespace vsrg
+} // namespace vsrg

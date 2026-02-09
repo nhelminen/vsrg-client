@@ -35,9 +35,9 @@ public:
         chart_manager = new ChartManager(ctx);
 
         // hardcoded path for now lmfao
-        std::string song_path = "charts/Rahatt - Matusa Bomber";
-        std::string chart_path =
-            vsrg::joinPaths(song_path, "Rahatt - Matusa Bomber (Ska) [2mnd].osu");
+        std::string song_path = "charts/Noah feat Ai Ohsera - Rebirth the end";
+        std::string chart_path = vsrg::joinPaths(
+            song_path, "Noah feat. Ai Ohsera - Rebirth the end (Begin) [Denouement].osu");
         if (!chart_manager->loadChart(chart_path)) {
             VSRG_LOG(*ctx->get_debugger(), vsrg::DebugLevel::ERROR,
                      "Failed to load chart from: " + chart_path);
@@ -51,7 +51,7 @@ public:
         }
 
         // for debug, do playback speed here?
-        conductor->set_playback_rate(1.5f);
+        conductor->set_playback_rate(1.0f);
 
         const ChartData *chart_data = chart_manager->getChartData();
         int key_count = chart_data->metadata.key_count;

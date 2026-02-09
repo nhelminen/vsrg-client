@@ -1,10 +1,16 @@
 #include "core/engine/audio.hpp"
 
-#define MINIAUDIO_IMPLEMENTATION  // i cant do it in header cause it would break it all
+#define STB_VORBIS_HEADER_ONLY
+#include "stb_vorbis.c"
+
+#define MINIAUDIO_IMPLEMENTATION
 #include <miniaudio.h>
 
+#undef STB_VORBIS_HEADER_ONLY
+#include "stb_vorbis.c"
+
 namespace vsrg {
-AudioManager::AudioManager(EngineContext *engine_context) : engine_context(engine_context) {
+AudioManager::AudioManager(EngineContext* engine_context) : engine_context(engine_context) {
     ma_result result = ma_engine_init(NULL, &engine);
     if (result != MA_SUCCESS) {
         std::cerr << "Failed to initialize audio engine: " << result << std::endl;
@@ -25,13 +31,15 @@ AudioManager::~AudioManager() {
 }
 
 AudioResult AudioManager::load_audio(std::string file_path) {
-    Audio *audio = new Audio();
-    ma_result result = ma_sound_init_from_file(&engine, file_path.c_str(),
-                                               MA_SOUND_FLAG_DECODE | MA_SOUND_FLAG_ASYNC, NULL,
-                                               NULL, &audio->sound);
+    Audio* audio = new Audio();
+
+    ma_uint32 flags = MA_SOUND_FLAG_STREAM;
+    ma_result result =
+        ma_sound_init_from_file(&engine, file_path.c_str(), flags, NULL, NULL, &audio->sound);
     if (result != MA_SUCCESS) {
         std::cerr << "Failed to load sound from file: " << file_path << " Error: " << result
                   << std::endl;
+        delete audio;
         return {result, nullptr};
     }
 
@@ -41,8 +49,9 @@ AudioResult AudioManager::load_audio(std::string file_path) {
     return {result, audio};
 }
 
-AudioResult AudioManager::unload_audio(Audio *audio) {
-    if (!audio) return {MA_INVALID_ARGS, nullptr};
+AudioResult AudioManager::unload_audio(Audio* audio) {
+    if (!audio)
+        return {MA_INVALID_ARGS, nullptr};
 
     auto it = std::find(loaded_audios.begin(), loaded_audios.end(), audio);
     if (it != loaded_audios.end()) {
@@ -53,11 +62,14 @@ AudioResult AudioManager::unload_audio(Audio *audio) {
     return {MA_SUCCESS, nullptr};
 }
 
-AudioResult AudioManager::play_audio(Audio *audio) {
-    if (!audio) return {MA_INVALID_ARGS, nullptr};
-    if (!audio->is_initialized()) return {MA_INVALID_OPERATION, nullptr};
+AudioResult AudioManager::play_audio(Audio* audio) {
+    if (!audio)
+        return {MA_INVALID_ARGS, nullptr};
+    if (!audio->is_initialized())
+        return {MA_INVALID_OPERATION, nullptr};
 
-    if (!audio->get_paused()) return {MA_INVALID_OPERATION, audio};
+    if (!audio->get_paused())
+        return {MA_INVALID_OPERATION, audio};
 
     ma_result result = ma_sound_start(audio->get_sound());
     if (result == MA_SUCCESS) {
@@ -67,11 +79,14 @@ AudioResult AudioManager::play_audio(Audio *audio) {
     return {result, audio};
 }
 
-AudioResult AudioManager::stop_audio(Audio *audio) {
-    if (!audio) return {MA_INVALID_ARGS, nullptr};
-    if (!audio->is_initialized()) return {MA_INVALID_OPERATION, nullptr};
+AudioResult AudioManager::stop_audio(Audio* audio) {
+    if (!audio)
+        return {MA_INVALID_ARGS, nullptr};
+    if (!audio->is_initialized())
+        return {MA_INVALID_OPERATION, nullptr};
 
-    if (audio->get_paused()) return {MA_INVALID_OPERATION, audio};
+    if (audio->get_paused())
+        return {MA_INVALID_OPERATION, audio};
 
     ma_result result = ma_sound_stop(audio->get_sound());
     if (result == MA_SUCCESS) {
@@ -82,13 +97,13 @@ AudioResult AudioManager::stop_audio(Audio *audio) {
 }
 
 void AudioManager::stop_all_audios() {
-    for (Audio *audio : loaded_audios) {
+    for (Audio* audio : loaded_audios) {
         stop_audio(audio);
     }
 }
 
 void AudioManager::unload_all_audios() {
-    for (Audio *audio : loaded_audios) {
+    for (Audio* audio : loaded_audios) {
         if (audio) {
             delete audio;
         }
@@ -104,7 +119,7 @@ LatencyInfo AudioManager::get_latency_info() {
         return info;
     }
 
-    ma_device *pDevice = ma_engine_get_device(&engine);
+    ma_device* pDevice = ma_engine_get_device(&engine);
 
     if (pDevice) {
         info.period_size_in_frames = pDevice->playback.internalPeriodSizeInFrames;
@@ -115,4 +130,4 @@ LatencyInfo AudioManager::get_latency_info() {
 
     return info;
 }
-}  // namespace vsrg
+} // namespace vsrg

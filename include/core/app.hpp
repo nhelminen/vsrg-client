@@ -1,8 +1,8 @@
 #pragma once
 
+#include <glad/glad.h>
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_opengl.h>
-#include <glad/glad.h>
 
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
@@ -13,7 +13,6 @@
 #include "core/engine/screen.hpp"
 #include "core/ui/font.hpp"
 #include "public/engineContext.hpp"
-
 
 using Clock = std::chrono::high_resolution_clock;
 

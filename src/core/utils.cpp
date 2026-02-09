@@ -1,8 +1,8 @@
 #include "core/utils.hpp"
 
 #ifdef _WIN32
-#include <psapi.h>
 #include <windows.h>
+#include <psapi.h>
 
 #elif defined(__linux__)
 #include <limits.h>

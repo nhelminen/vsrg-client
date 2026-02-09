@@ -1,7 +1,7 @@
 #pragma once
 
-#include <ft2build.h>
 #include <glad/glad.h>
+#include <ft2build.h>
 
 #include "public/engineContext.hpp"
 

@@ -4,6 +4,7 @@ add_subdirectory("glm")
 set(GLM_ENABLE_CXX_20 ON)
 
 add_subdirectory("freetype")
+add_subdirectory("json")
 
 add_library(miniaudio INTERFACE)
 target_include_directories(miniaudio INTERFACE 
@@ -27,4 +28,5 @@ target_link_libraries("3rdparty" INTERFACE
     freetype
     miniaudio
     stb
+    nlohmann_json::nlohmann_json
 )
